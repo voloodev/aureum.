@@ -12,96 +12,107 @@
         :root {
             --gold: #D4AF37;
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --blur: blur(20px);
+            --glass: rgba(255, 255, 255, 0.05);
+            --blur: blur(25px);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
             background: #050505;
-            background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.08), transparent);
+            background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1), transparent 50%);
             color: var(--white);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Floating Navbar */
+        /* Hero Login Section (Center) */
+        #authOverlay {
+            position: fixed; inset: 0; z-index: 3000;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .auth-card {
+            background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 40px; border-radius: 35px; text-align: center; width: 90%; max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .auth-card h1 { font-size: 32px; color: var(--gold); margin-bottom: 10px; letter-spacing: 3px; }
+        .auth-card p { opacity: 0.6; margin-bottom: 30px; font-size: 14px; }
+
+        /* Minimal Google Circle */
+        .g_id_signin { display: inline-block; transform: scale(1.2); }
+
+        /* Top Nav after Login */
         nav {
-            position: sticky; top: 15px; z-index: 1000;
-            margin: 0 auto; width: 95%; max-width: 1200px;
-            background: var(--glass); backdrop-filter: var(--blur);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 12px 25px; display: flex; justify-content: space-between; align-items: center;
+            display: none; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur);
+            border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo { font-size: 22px; font-weight: 800; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
+        .logo { font-weight: 800; color: var(--gold); letter-spacing: 2px; font-size: 20px; }
 
-        .nav-btns { display: flex; gap: 10px; align-items: center; }
-
-        .btn {
-            padding: 8px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px;
+        .profile-area { position: relative; cursor: pointer; }
+        .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); transition: 0.3s; }
+        
+        /* Dropdown Menu */
+        .profile-dropdown {
+            position: absolute; top: 55px; right: 0; background: #111; border: 1px solid var(--gold);
+            padding: 20px; border-radius: 20px; display: none; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
+        .profile-dropdown h4 { color: var(--gold); font-size: 14px; }
+        .profile-dropdown p { font-size: 11px; opacity: 0.7; margin-bottom: 15px; word-break: break-all; }
 
-        .btn-gold { background: var(--gold); color: black; border: none; }
-        .btn-outline { background: transparent; color: white; border: 1px solid var(--glass-border); }
+        /* UI Elements */
+        .sell-btn {
+            background: var(--gold); color: black; border: none; padding: 10px 25px;
+            border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .sell-btn:hover { transform: scale(1.05); }
 
-        /* Auth UI */
-        #userProfile { display: none; align-items: center; gap: 10px; }
-        #userProfile img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); }
-
-        /* Grid */
         .wrapper { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .product-card { background: var(--glass); border-radius: 25px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .product-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .product-img { width: 100%; height: 200px; border-radius: 18px; object-fit: cover; }
 
-        /* Product Card */
-        .product-card {
-            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 25px;
-            padding: 20px; transition: 0.4s; position: relative;
-        }
-        .product-card:hover { transform: translateY(-8px); border-color: var(--gold); }
-        .product-img { width: 100%; height: 200px; border-radius: 18px; object-fit: cover; margin-bottom: 15px; }
-        .admin-badge { position: absolute; top: 10px; right: 10px; background: red; font-size: 10px; padding: 4px 8px; border-radius: 10px; cursor: pointer; display: none; }
-
-        /* Modals */
-        .modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-content {
-            background: #111; width: 100%; max-width: 400px; padding: 30px; border-radius: 30px; border: 1px solid var(--gold);
-        }
-        input { width: 100%; background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 15px; border-radius: 12px; }
-
-        .wa-btn {
-            display: block; text-align: center; background: #25D366; color: white; text-decoration: none;
-            padding: 12px; border-radius: 15px; font-weight: 700; margin-top: 15px;
-        }
-
-        @media (max-width: 600px) {
-            .nav-btns .btn { padding: 6px 12px; font-size: 11px; }
-        }
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
+        .modal-content { background: #000; padding: 30px; border-radius: 25px; border: 1px solid var(--gold); width: 90%; max-width: 400px; }
+        input { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">AUREUM</div>
-        <div class="nav-btns">
+    <div id="authOverlay">
+        <div class="auth-card">
+            <h1>AUREUM</h1>
+            <p>The Future of Luxury Marketplace</p>
             <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse">
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com"
+                 data-callback="onSignIn">
             </div>
-            <div class="g_id_signin" data-type="standard"></div>
+            <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="filled_blue"></div>
+            <p style="margin-top: 20px; font-size: 12px;">Sign in to enter the market</p>
+            <button class="btn-outline" style="background:transparent; border:none; color:var(--gold); cursor:pointer;" onclick="adminLoginPrompt()">Admin Login</button>
+        </div>
+    </div>
 
-            <div id="userProfile">
-                <img id="userPic" src="">
-                <button class="btn btn-gold" onclick="openModal('sellModal')">Sell</button>
+    <nav id="mainNav">
+        <div class="logo">AUREUM</div>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <button class="sell-btn" onclick="openModal('sellModal')">SELL ITEM</button>
+            <div class="profile-area" onclick="toggleDropdown()">
+                <img id="userAvatar" class="profile-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                <div class="profile-dropdown" id="pDropdown">
+                    <h4 id="userName">User Name</h4>
+                    <p id="userEmail">user@example.com</p>
+                    <hr style="opacity:0.1; margin-bottom:10px;">
+                    <button class="sell-btn" style="width:100%; font-size:11px;" onclick="logout()">LOGOUT</button>
+                </div>
             </div>
-
-            <button class="btn btn-outline" id="adminBtn" onclick="openModal('adminModal')"><i class="fas fa-user-shield"></i></button>
-            <button class="btn btn-outline" id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
         </div>
     </nav>
 
@@ -109,86 +120,76 @@
         <div class="product-grid" id="marketGrid"></div>
     </div>
 
-    <div class="modal" id="adminModal">
-        <div class="modal-content">
-            <h2 style="margin-bottom:20px; color:var(--gold)">Admin Login</h2>
-            <input type="text" id="admUser" placeholder="Username">
-            <input type="password" id="admPass" placeholder="Password">
-            <button class="btn btn-gold" style="width:100%" onclick="adminLogin()">Login</button>
-            <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="closeModal('adminModal')">Cancel</button>
-        </div>
-    </div>
-
     <div class="modal" id="sellModal">
         <div class="modal-content">
-            <h2 style="margin-bottom:20px; color:var(--gold)">Post Item</h2>
-            <input type="file" id="fileIn" accept="image/*">
+            <h2 style="color:var(--gold); margin-bottom:20px;">List Item</h2>
+            <input type="file" id="fileIn">
             <input type="text" id="pName" placeholder="Item Name">
             <input type="text" id="pPrice" placeholder="Price">
             <input type="text" id="pWA" placeholder="WhatsApp Number">
-            <button class="btn btn-gold" style="width:100%" onclick="publish()">Publish Now</button>
-            <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="closeModal('sellModal')">Cancel</button>
+            <button class="sell-btn" style="width:100%" onclick="publish()">Publish</button>
+            <button class="sell-btn" style="width:100%; margin-top:10px; background:#222; color:white;" onclick="closeModal('sellModal')">Cancel</button>
         </div>
     </div>
 
     <script>
-        let isAdmin = false;
-        let currentImg = "";
+        let userData = {};
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // 1. Admin Login Logic
-        function adminLogin() {
-            const u = document.getElementById('admUser').value;
-            const p = document.getElementById('admPass').value;
-            if(u === 'aureum' && p === '1234') {
-                isAdmin = true;
-                localStorage.setItem('aureum_admin', 'true');
-                alert("Welcome Back, Admin!");
-                closeModal('adminModal');
-                checkAdminState();
-            } else {
-                alert("Access Denied!");
-            }
+        function onSignIn(response) {
+            // Decode simple JWT (Normally you do this on server)
+            const base64Url = response.credential.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+            
+            userData = JSON.parse(jsonPayload);
+            
+            // Set UI
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainNav').style.display = 'flex';
+            document.getElementById('userName').innerText = userData.name;
+            document.getElementById('userEmail').innerText = userData.email;
+            document.getElementById('userAvatar').src = userData.picture;
+            
+            render();
         }
 
-        function checkAdminState() {
-            if(localStorage.getItem('aureum_admin') === 'true') {
-                isAdmin = true;
-                document.getElementById('adminBtn').style.display = 'none';
-                document.getElementById('logoutBtn').style.display = 'block';
+        function toggleDropdown() {
+            const d = document.getElementById('pDropdown');
+            d.style.display = d.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function adminLoginPrompt() {
+            const u = prompt("Username:");
+            const p = prompt("Password:");
+            if(u === 'aureum' && p === '1234') {
+                localStorage.setItem('isAdmin', 'true');
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('mainNav').style.display = 'flex';
                 render();
             }
         }
 
-        // 2. Google Login Callback (Simple Simulation)
-        function handleCredentialResponse(response) {
-            // මේකෙදි Google එකෙන් දෙන token එක decode කරලා user info ගන්න පුළුවන්
-            // දැනට අපි user log වුණා කියලා හිතමු
-            document.querySelector('.g_id_signin').style.display = 'none';
-            document.getElementById('userProfile').style.display = 'flex';
-            document.getElementById('logoutBtn').style.display = 'block';
-        }
-
         function logout() {
-            localStorage.removeItem('aureum_admin');
+            localStorage.clear();
             location.reload();
         }
 
-        // 3. Image Handling
-        document.getElementById('fileIn').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = () => currentImg = reader.result;
-            reader.readAsDataURL(e.target.files[0]);
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Same rendering and publish logic
+        let currentImg = "";
+        document.getElementById('fileIn').addEventListener('change', e => {
+            const r = new FileReader();
+            r.onload = () => currentImg = r.result;
+            r.readAsDataURL(e.target.files[0]);
         });
 
-        // 4. Publish & Render
         function publish() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const wa = document.getElementById('pWA').value;
-            if(!name || !wa) return alert("Fill all!");
+            if(!name || !wa) return alert("Fill all details");
 
             const items = JSON.parse(localStorage.getItem('aureum_items')) || [];
             items.push({ id: Date.now(), name, price, wa, img: currentImg });
@@ -197,32 +198,30 @@
             render();
         }
 
+        function render() {
+            const grid = document.getElementById('marketGrid');
+            const items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+            grid.innerHTML = items.map(i => `
+                <div class="product-card">
+                    <img src="${i.img || 'https://via.placeholder.com/300'}" class="product-img">
+                    <h3 style="margin:10px 0">${i.name}</h3>
+                    <p style="color:var(--gold); font-weight:800; font-size:18px;">${i.price}</p>
+                    <a href="https://wa.me/${i.wa}?text=I'm%20interested" class="sell-btn" style="display:block; text-align:center; text-decoration:none; margin-top:10px; font-size:12px; background:#25D366; color:white;">WhatsApp</a>
+                    ${isAdmin ? `<button onclick="deleteItem(${i.id})" style="width:100%; margin-top:5px; background:red; border:none; color:white; border-radius:5px; cursor:pointer;">Delete</button>` : ''}
+                </div>
+            `).join('');
+        }
+
         function deleteItem(id) {
-            if(!confirm("Remove this post?")) return;
-            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            let items = JSON.parse(localStorage.getItem('aureum_items'));
             items = items.filter(i => i.id !== id);
             localStorage.setItem('aureum_items', JSON.stringify(items));
             render();
         }
 
-        function render() {
-            const grid = document.getElementById('marketGrid');
-            const items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            grid.innerHTML = items.map(i => `
-                <div class="product-card">
-                    ${isAdmin ? `<div class="admin-badge" style="display:block" onclick="deleteItem(${i.id})">REMOVE</div>` : ''}
-                    <img src="${i.img || 'https://via.placeholder.com/300'}" class="product-img">
-                    <h3>${i.name}</h3>
-                    <p style="color:var(--gold); font-weight:800">${i.price}</p>
-                    <a href="https://wa.me/${i.wa}?text=I'm%20interested%20on%20this" class="wa-btn">WhatsApp</a>
-                </div>
-            `).join('');
-        }
-
-        window.onload = () => {
-            checkAdminState();
-            render();
-        };
+        window.onload = () => { if(localStorage.getItem('isAdmin')) { document.getElementById('authOverlay').style.display = 'none'; document.getElementById('mainNav').style.display = 'flex'; render(); } };
     </script>
 </body>
 </html>
