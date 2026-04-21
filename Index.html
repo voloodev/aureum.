@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aureum | New-Gen Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --black: #0a0a0a;
+            --white: #ffffff;
+            --grey: #1a1a1a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Navbar Styling */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Gold Outline Sell Button */
+        .sell-btn {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--gold);
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .sell-btn:hover {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Filter & Search Section */
+        .header-actions {
+            padding: 40px 5% 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .search-bar {
+            flex: 1;
+            background: var(--grey);
+            border: 1px solid #333;
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+
+        .filter-select {
+            background: var(--grey);
+            color: white;
+            border: 1px solid #333;
+            padding: 0 15px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 5% 50px;
+        }
+
+        .product-card {
+            background: var(--glass);
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 15px;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            background: #222;
+            border-radius: 15px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .product-info h3 { font-size: 18px; margin-bottom: 5px; }
+        .product-info p { color: #888; font-size: 13px; margin-bottom: 10px; }
+        .product-price { color: var(--gold); font-weight: 800; font-size: 20px; }
+
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .whatsapp-btn:hover { opacity: 0.9; }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #111;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid var(--gold);
+            position: relative;
+        }
+
+        .modal-content h2 { color: var(--gold); margin-bottom: 20px; }
+        .modal-content input, .modal-content textarea, .modal-content select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        /* Admin Section Styling */
+        #adminArea {
+            display: none;
+            padding: 40px 5%;
+            background: #0f0f0f;
+            min-height: 100vh;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Aureum</div>
+        <div class="nav-right">
+            <button class="sell-btn" onclick="toggleModal('sellModal', true)">Sell Item</button>
+            <button onclick="toggleModal('adminLoginModal', true)" style="background:transparent; border:none; color:#555; cursor:pointer;">
+                <i class="fas fa-user-shield"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mainSite">
+        <div class="header-actions">
+            <input type="text" class="search-bar" placeholder="What are you looking for?" id="itemSearch">
+            <select class="filter-select">
+                <option>All Categories</option>
+                <option>Electronics</option>
+                <option>Luxury</option>
+                <option>Fashion</option>
+            </select>
+        </div>
+
+        <div class="product-grid" id="marketGrid">
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop" class="product-img">
+                <div class="product-info">
+                    <h3>Premium Minimalist Watch</h3>
+                    <p>High quality luxury watch with leather straps.</p>
+                    <div class="product-price">Rs. 15,000</div>
+                    <a href="https://wa.me/94771234567?text=I'm%20interested%20on%20this%20is%20it%20available" target="_blank" class="whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> Buy Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminArea">
+        <h2 style="color:var(--gold); margin-bottom: 20px;">Admin Dashboard</h2>
+        <div class="admin-controls">
+            <button class="sell-btn" onclick="alert('Category feature coming soon')">Add Category</button>
+            <button class="sell-btn" style="border-color: #ff4444;" onclick="location.reload()">Logout</button>
+        </div>
+        <p>Current active posts will appear here for management.</p>
+    </div>
+
+    <div class="modal" id="sellModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="toggleModal('sellModal', false)">&times;</span>
+            <h2>List Your Item</h2>
+            <input type="text" id="itemName" placeholder="Item Name">
+            <input type="text" id="itemPrice" placeholder="Price (e.g. Rs. 5000)">
+            <select id="itemCategory">
+                <option value="Electronics">Electronics</option>
+                <option value="Luxury">Luxury</option>
+                <option value="Fashion">Fashion</option>
+            </select>
+            <textarea id="itemDesc" rows="4" placeholder="Description"></textarea>
+            <input type="text" id="itemWA" placeholder="WhatsApp Number (e.g. 947XXXXXXXX)">
+            <button class="sell-btn" style="width:100%" onclick="postItem()">Post Now</button>
+        </div>
+    </div>
+
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content" style="max-width: 350px;">
+            <span class="close-btn" onclick="toggleModal('adminLoginModal', false)">&times;</span>
+            <h2>Admin Login</h2>
+            <input type="text" id="adminUser" placeholder="Username">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button class="sell-btn" style="width:100%" onclick="loginAdmin()">Login</button>
+        </div>
+    </div>
+
+    <script>
+        // Modal Control
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        // Admin Login Logic
+        function loginAdmin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+
+            if(user === 'aureum' && pass === '1234') {
+                toggleModal('adminLoginModal', false);
+                document.getElementById('mainSite').style.display = 'none';
+                document.getElementById('adminArea').style.display = 'block';
+            } else {
+                alert('Invalid Credentials!');
+            }
+        }
+
+        // Post Item Logic (Local Display)
+        function postItem() {
+            const name = document.getElementById('itemName').value;
+            const price = document.getElementById('itemPrice').value;
+            const desc = document.getElementById('itemDesc').value;
+            const wa = document.getElementById('itemWA').value;
+            const cat = document.getElementById('itemCategory').value;
+
+            if(!name || !price || !wa) {
+                alert('Please fill the main fields!');
+                return;
+            }
+
+            const grid = document.getElementById('marketGrid');
+            const newCard = document.createElement('div');
+            newCard.className = 'product-card';
+            
+            // Auto-generate WhatsApp message
+            const waMessage = encodeURIComponent("I'm interested on this is it available");
+            const waLink = `https://wa.me/${wa}?text=${waMessage}`;
+
+            newCard.innerHTML = `
+                <img src="https://via.placeholder.com/300x200/111/D4AF37?text=${cat}" class="product-img">
+                <div class="product-info">
+                    <h3>${name}</h3>
+                    <p>${desc}</p>
+                    <div class="product-price">${price}</div>
+                    <a href="${waLink}" target="_blank" class="whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> Buy Now
+                    </a>
+                </div>
+            `;
+
+            grid.prepend(newCard);
+            toggleModal('sellModal', false);
+            alert('Item posted successfully!');
+        }
+
+        // Search Filter Logic
+        document.getElementById('itemSearch').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                card.style.display = title.includes(term) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
