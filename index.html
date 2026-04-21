@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureum | Next-Gen Marketplace</title>
+    <title>Aureum | Luxury Marketplace</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -23,161 +23,171 @@
             background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1), transparent 50%);
             color: var(--white);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* Hero Login Section (Center) */
+        /* --- Classic Frosted Login UI --- */
         #authOverlay {
-            position: fixed; inset: 0; z-index: 3000;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
+            position: fixed; inset: 0; z-index: 5000;
+            background: #000; display: flex; align-items: center; justify-content: center;
         }
 
-        .auth-card {
-            background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 40px; border-radius: 35px; text-align: center; width: 90%; max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        .login-container {
+            width: 90%; max-width: 450px;
+            background: var(--glass); backdrop-filter: var(--blur);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 40px; padding: 50px 30px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        .auth-card h1 { font-size: 32px; color: var(--gold); margin-bottom: 10px; letter-spacing: 3px; }
-        .auth-card p { opacity: 0.6; margin-bottom: 30px; font-size: 14px; }
+        .login-container h1 {
+            font-size: 36px; color: var(--gold); letter-spacing: 5px; 
+            margin-bottom: 30px; text-align: center;
+        }
 
-        /* Minimal Google Circle */
-        .g_id_signin { display: inline-block; transform: scale(1.2); }
+        .auth-btns button {
+            width: 100%; padding: 14px; margin-bottom: 12px;
+            border-radius: 15px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
 
-        /* Top Nav after Login */
+        .btn-white { background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-gold { background: var(--gold); color: black; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold) !important; color: white; }
+
+        /* --- Main UI --- */
         nav {
             display: none; justify-content: space-between; align-items: center;
             padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur);
             border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo { font-weight: 800; color: var(--gold); letter-spacing: 2px; font-size: 20px; }
-
-        .profile-area { position: relative; cursor: pointer; }
-        .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); transition: 0.3s; }
-        
-        /* Dropdown Menu */
-        .profile-dropdown {
-            position: absolute; top: 55px; right: 0; background: #111; border: 1px solid var(--gold);
-            padding: 20px; border-radius: 20px; display: none; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .profile-dropdown h4 { color: var(--gold); font-size: 14px; }
-        .profile-dropdown p { font-size: 11px; opacity: 0.7; margin-bottom: 15px; word-break: break-all; }
-
-        /* UI Elements */
-        .sell-btn {
-            background: var(--gold); color: black; border: none; padding: 10px 25px;
-            border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
-        }
-        .sell-btn:hover { transform: scale(1.05); }
-
         .wrapper { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .product-card { background: var(--glass); border-radius: 25px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .product-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .product-img { width: 100%; height: 200px; border-radius: 18px; object-fit: cover; }
 
-        /* Modal */
+        /* Admin Panels */
+        #adminTools {
+            display: none; background: rgba(212, 175, 55, 0.1); padding: 20px;
+            border-radius: 20px; margin-bottom: 30px; border: 1px dashed var(--gold);
+        }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+
+        .product-card { 
+            background: var(--glass); border-radius: 25px; padding: 15px; 
+            border: 1px solid rgba(255,255,255,0.05); position: relative;
+        }
+        .product-card.pinned { border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(212,175,55,0.2); }
+        .pin-icon { position: absolute; top: 10px; left: 10px; color: var(--gold); }
+
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 4000; align-items: center; justify-content: center; }
-        .modal-content { background: #000; padding: 30px; border-radius: 25px; border: 1px solid var(--gold); width: 90%; max-width: 400px; }
-        input { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 10px; border-radius: 10px; }
+        .modal-content { background: #111; padding: 30px; border-radius: 25px; border: 1px solid var(--gold); width: 90%; max-width: 400px; }
+        
+        input, select, textarea { width: 100%; background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div id="authOverlay">
-        <div class="auth-card">
+        <div class="login-container">
             <h1>AUREUM</h1>
-            <p>The Future of Luxury Marketplace</p>
-            <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com"
-                 data-callback="onSignIn">
+            <div class="auth-btns">
+                <button class="btn-white" onclick="alert('Google Auth requires Client ID setup in code')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Color_Icon.svg" width="20">
+                    Sign in with Google
+                </button>
+                <button class="btn-gold" onclick="enterApp('user')">Login Account</button>
+                <button class="btn-outline" onclick="enterApp('user')">Create Account</button>
+                <p style="margin: 15px 0; font-size: 12px; opacity: 0.5;">OR</p>
+                <button onclick="adminPrompt()" style="background:transparent; color:var(--gold); border:none; cursor:pointer; font-weight:bold;">Admin Access</button>
             </div>
-            <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="filled_blue"></div>
-            <p style="margin-top: 20px; font-size: 12px;">Sign in to enter the market</p>
-            <button class="btn-outline" style="background:transparent; border:none; color:var(--gold); cursor:pointer;" onclick="adminLoginPrompt()">Admin Login</button>
         </div>
     </div>
 
     <nav id="mainNav">
-        <div class="logo">AUREUM</div>
-        <div style="display:flex; gap:20px; align-items:center;">
-            <button class="sell-btn" onclick="openModal('sellModal')">SELL ITEM</button>
-            <div class="profile-area" onclick="toggleDropdown()">
-                <img id="userAvatar" class="profile-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-                <div class="profile-dropdown" id="pDropdown">
-                    <h4 id="userName">User Name</h4>
-                    <p id="userEmail">user@example.com</p>
-                    <hr style="opacity:0.1; margin-bottom:10px;">
-                    <button class="sell-btn" style="width:100%; font-size:11px;" onclick="logout()">LOGOUT</button>
-                </div>
-            </div>
+        <div style="font-weight:800; color:var(--gold); letter-spacing:2px;">AUREUM</div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-gold" style="padding:8px 15px; border-radius:10px; border:none; cursor:pointer;" onclick="openModal('sellModal')">SELL ITEM</button>
+            <button class="btn-outline" style="padding:8px 15px; border-radius:10px; cursor:pointer;" onclick="location.reload()">LOGOUT</button>
         </div>
     </nav>
 
     <div class="wrapper">
+        <div id="adminTools">
+            <h4 style="color:var(--gold); margin-bottom:10px;">Admin Panel</h4>
+            <input type="text" id="newCatName" placeholder="New Category Name" style="width:200px;">
+            <button class="btn-gold" style="padding:10px; border-radius:10px;" onclick="addCategory()">Add Category</button>
+            <div id="catList" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;"></div>
+        </div>
+
         <div class="product-grid" id="marketGrid"></div>
     </div>
 
     <div class="modal" id="sellModal">
         <div class="modal-content">
-            <h2 style="color:var(--gold); margin-bottom:20px;">List Item</h2>
+            <h2 style="color:var(--gold); margin-bottom:20px;">Sell Item</h2>
             <input type="file" id="fileIn">
             <input type="text" id="pName" placeholder="Item Name">
             <input type="text" id="pPrice" placeholder="Price">
+            <select id="pCat"></select>
             <input type="text" id="pWA" placeholder="WhatsApp Number">
-            <button class="sell-btn" style="width:100%" onclick="publish()">Publish</button>
-            <button class="sell-btn" style="width:100%; margin-top:10px; background:#222; color:white;" onclick="closeModal('sellModal')">Cancel</button>
+            <button class="btn-gold" style="width:100%; padding:12px; border:none; border-radius:10px; font-weight:bold;" onclick="publish()">Publish</button>
+            <button onclick="closeModal('sellModal')" style="width:100%; margin-top:10px; background:none; border:none; color:white; cursor:pointer;">Cancel</button>
         </div>
     </div>
 
     <script>
-        let userData = {};
+        let isAdmin = false;
+        let categories = JSON.parse(localStorage.getItem('aureum_cats')) || ['Luxury', 'Electronics', 'Fashion'];
 
-        function onSignIn(response) {
-            // Decode simple JWT (Normally you do this on server)
-            const base64Url = response.credential.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-            
-            userData = JSON.parse(jsonPayload);
-            
-            // Set UI
+        function enterApp(type) {
             document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('mainNav').style.display = 'flex';
-            document.getElementById('userName').innerText = userData.name;
-            document.getElementById('userEmail').innerText = userData.email;
-            document.getElementById('userAvatar').src = userData.picture;
-            
             render();
         }
 
-        function toggleDropdown() {
-            const d = document.getElementById('pDropdown');
-            d.style.display = d.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function adminLoginPrompt() {
+        function adminPrompt() {
             const u = prompt("Username:");
             const p = prompt("Password:");
             if(u === 'aureum' && p === '1234') {
-                localStorage.setItem('isAdmin', 'true');
-                document.getElementById('authOverlay').style.display = 'none';
-                document.getElementById('mainNav').style.display = 'flex';
-                render();
-            }
+                isAdmin = true;
+                document.getElementById('adminTools').style.display = 'block';
+                enterApp('admin');
+            } else { alert("Invalid!"); }
         }
 
-        function logout() {
-            localStorage.clear();
-            location.reload();
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            updateCatDropdown();
         }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Same rendering and publish logic
+        // Category Logic
+        function addCategory() {
+            const val = document.getElementById('newCatName').value;
+            if(!val) return;
+            categories.push(val);
+            localStorage.setItem('aureum_cats', JSON.stringify(categories));
+            renderAdminCats();
+        }
+
+        function removeCat(index) {
+            categories.splice(index, 1);
+            localStorage.setItem('aureum_cats', JSON.stringify(categories));
+            renderAdminCats();
+        }
+
+        function renderAdminCats() {
+            const list = document.getElementById('catList');
+            list.innerHTML = categories.map((c, i) => `
+                <span style="background:#333; padding:5px 10px; border-radius:5px; font-size:12px;">
+                    ${c} <i class="fas fa-times" style="color:red; cursor:pointer;" onclick="removeCat(${i})"></i>
+                </span>
+            `).join('');
+        }
+
+        function updateCatDropdown() {
+            document.getElementById('pCat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
+        }
+
+        // Post Logic
         let currentImg = "";
         document.getElementById('fileIn').addEventListener('change', e => {
             const r = new FileReader();
@@ -189,29 +199,13 @@
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const wa = document.getElementById('pWA').value;
-            if(!name || !wa) return alert("Fill all details");
+            const cat = document.getElementById('pCat').value;
 
             const items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            items.push({ id: Date.now(), name, price, wa, img: currentImg });
+            items.push({ id: Date.now(), name, price, wa, cat, img: currentImg, pinned: false });
             localStorage.setItem('aureum_items', JSON.stringify(items));
             closeModal('sellModal');
             render();
-        }
-
-        function render() {
-            const grid = document.getElementById('marketGrid');
-            const items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            const isAdmin = localStorage.getItem('isAdmin') === 'true';
-
-            grid.innerHTML = items.map(i => `
-                <div class="product-card">
-                    <img src="${i.img || 'https://via.placeholder.com/300'}" class="product-img">
-                    <h3 style="margin:10px 0">${i.name}</h3>
-                    <p style="color:var(--gold); font-weight:800; font-size:18px;">${i.price}</p>
-                    <a href="https://wa.me/${i.wa}?text=I'm%20interested" class="sell-btn" style="display:block; text-align:center; text-decoration:none; margin-top:10px; font-size:12px; background:#25D366; color:white;">WhatsApp</a>
-                    ${isAdmin ? `<button onclick="deleteItem(${i.id})" style="width:100%; margin-top:5px; background:red; border:none; color:white; border-radius:5px; cursor:pointer;">Delete</button>` : ''}
-                </div>
-            `).join('');
         }
 
         function deleteItem(id) {
@@ -221,7 +215,42 @@
             render();
         }
 
-        window.onload = () => { if(localStorage.getItem('isAdmin')) { document.getElementById('authOverlay').style.display = 'none'; document.getElementById('mainNav').style.display = 'flex'; render(); } };
+        function togglePin(id) {
+            let items = JSON.parse(localStorage.getItem('aureum_items'));
+            const idx = items.findIndex(i => i.id === id);
+            items[idx].pinned = !items[idx].pinned;
+            localStorage.setItem('aureum_items', JSON.stringify(items));
+            render();
+        }
+
+        function render() {
+            const grid = document.getElementById('marketGrid');
+            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            
+            // Sort to show pinned items first
+            items.sort((a, b) => b.pinned - a.pinned);
+
+            grid.innerHTML = items.map(i => `
+                <div class="product-card ${i.pinned ? 'pinned' : ''}">
+                    ${i.pinned ? '<i class="fas fa-thumbtack pin-icon"></i>' : ''}
+                    <img src="${i.img || 'https://via.placeholder.com/300'}" style="width:100%; height:180px; object-fit:cover; border-radius:15px;">
+                    <h3 style="margin-top:10px;">${i.name}</h3>
+                    <p style="font-size:12px; opacity:0.5;">Category: ${i.cat}</p>
+                    <p style="color:var(--gold); font-weight:800; font-size:20px; margin:10px 0;">${i.price}</p>
+                    <a href="https://wa.me/${i.wa}?text=I'm%20interested" style="display:block; text-align:center; background:#25D366; color:white; text-decoration:none; padding:10px; border-radius:10px; font-weight:bold;">Buy on WhatsApp</a>
+                    
+                    ${isAdmin ? `
+                        <div style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                            <button onclick="togglePin(${i.id})" style="background:#555; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">${i.pinned ? 'Unpin' : 'Pin'}</button>
+                            <button onclick="deleteItem(${i.id})" style="background:red; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Delete</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            if(isAdmin) renderAdminCats();
+        }
+
+        window.onload = render;
     </script>
 </body>
 </html>
