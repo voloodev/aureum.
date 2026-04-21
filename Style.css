@@ -1,0 +1,226 @@
+:root {
+    --gold: #D4AF37;
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --dark-grey: #1a1a1a;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    border-bottom: 1px solid #333;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+/* Gold Outline Sell Button */
+.sell-btn {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--gold);
+    padding: 10px 25px;
+    border-radius: 12px; /* Rounded Rectangular */
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sell-btn:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 15px var(--gold);
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    flex: 0.5;
+}
+
+input[type="text"], select, textarea {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* Product Card */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 40px 5%;
+}
+
+.product-card {
+    background: #111;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #222;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    border-color: var(--gold);
+}
+
+.info { padding: 20px; }
+
+.price { color: var(--gold); font-size: 1.5rem; font-weight: bold; }
+
+.buy-btn {
+    display: block;
+    text-align: center;
+    background: #25D366; /* WhatsApp Green */
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+:root {
+    --gold: #D4AF37;
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --dark-grey: #1a1a1a;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    border-bottom: 1px solid #333;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+/* Gold Outline Sell Button */
+.sell-btn {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--gold);
+    padding: 10px 25px;
+    border-radius: 12px; /* Rounded Rectangular */
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sell-btn:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 15px var(--gold);
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    flex: 0.5;
+}
+
+input[type="text"], select, textarea {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* Product Card */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 40px 5%;
+}
+
+.product-card {
+    background: #111;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #222;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    border-color: var(--gold);
+}
+
+.info { padding: 20px; }
+
+.price { color: var(--gold); font-size: 1.5rem; font-weight: bold; }
+
+.buy-btn {
+    display: block;
+    text-align: center;
+    background: #25D366; /* WhatsApp Green */
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: #111;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    border: 1px solid var(--gold);
+}
