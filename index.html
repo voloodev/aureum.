@@ -13,79 +13,191 @@
     <style>
         :root {
             --primary: #dfbc74; --bg-dark: #0a0a0c;
-            --surface: #121215; --text-main: #ffffff;
+            --surface: #121215; --text-main: #ffffff; --text-muted: #a1a1aa;
             --glass: rgba(20, 20, 22, 0.7); --blur: blur(25px);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
 
-        /* --- Header & Sizing Fix --- */
+        /* --- Header --- */
         nav { display: none; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-weight: 700; color: var(--primary); font-size: 28px; letter-spacing: 1px; }
+        .logo { font-weight: 700; color: var(--primary); font-size: 28px; cursor: pointer; }
         
         .header-actions { display: flex; align-items: center; gap: 15px; flex: 1; max-width: 500px; margin: 0 20px; }
-        .search-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 12px 18px; flex: 1; border: 1px solid rgba(255,255,255,0.1); }
-        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 14px; }
-        
-        .filter-toggle { background: var(--primary); border: none; padding: 12px 15px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-
-        /* --- Category Styling --- */
-        .cat-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 20px 5%; scrollbar-width: none; }
-        .cat-btn { padding: 10px 22px; border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; color: white; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.3s; }
-        .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 15px rgba(223, 188, 116, 0.3); }
+        .search-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 15px; flex: 1; border: 1px solid rgba(255,255,255,0.05); }
+        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; padding-left: 10px; font-size: 14px; }
+        .filter-btn-toggle { background: var(--primary); color: #000; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
         /* --- Filtering Overlay --- */
-        #filterOverlay { display: none; padding: 25px; background: var(--surface); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin: 0 5% 20px; }
-        .filter-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .filter-item label { font-size: 12px; color: #777; display: block; margin-bottom: 5px; }
-        .filter-item select, .filter-item input { width: 100%; padding: 12px; background: #000; color: white; border: 1px solid #333; border-radius: 10px; }
+        #filterOverlay { display: none; padding: 20px; background: var(--surface); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin: 0 5% 10px; }
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+        .filter-item label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+        .filter-item select, .filter-item input { width: 100%; padding: 10px; background: #000; color: white; border: 1px solid #333; border-radius: 8px; font-size: 12px; }
+
+        /* --- Category Styling --- */
+        .cat-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
+        .cat-btn { padding: 10px 22px; border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; color: white; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
+        .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; }
 
         /* --- Grid --- */
         .masonry-grid { column-count: 2; column-gap: 15px; padding: 0 5%; }
         @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
-        .pin-card { break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .pin-card { break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; cursor: pointer; }
         .pin-card img { width: 100%; display: block; }
-        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 4px 10px; border-radius: 8px; font-weight: 700; font-size: 10px; }
+        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 10px; }
 
-        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90vh; background: var(--glass); backdrop-filter: var(--blur); border-radius: 30px 30px 0 0; z-index: 3000; transition: 0.5s; padding: 30px; overflow-y: auto; }
+        /* --- Auth & Layers --- */
+        #authOverlay, #adminLoginLayer { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        #adminLoginLayer { z-index: 6000; display: none; background: rgba(0,0,0,0.95); }
+        .auth-box { width: 100%; max-width: 380px; background: var(--surface); border-radius: 24px; padding: 40px; text-align: center; border: 1px solid #333; }
+        .auth-input { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; outline: none; }
+        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+
+        /* --- Side Menu --- */
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 2000; transition: 0.4s; padding: 30px 20px; border-left: 1px solid rgba(255,255,255,0.05); }
+        #sideMenu.active { right: 0; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; cursor: pointer; font-weight: 600; color: white; border-radius: 12px; transition: 0.2s; }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
+        .menu-item i { font-size: 18px; color: var(--primary); }
+
+        /* --- Post Details --- */
+        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92vh; background: var(--glass); backdrop-filter: var(--blur); border-radius: 30px 30px 0 0; z-index: 3000; transition: 0.5s; padding: 25px; overflow-y: auto; }
         .slide-overlay.active { bottom: 0; }
-        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .exit-btn { float: right; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        .image-slider { position: relative; width: 100%; border-radius: 20px; overflow: hidden; margin-top: 10px; }
+        .slider-arrow { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); font-size: 28px; color: white; cursor: pointer; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
+    <div id="adminLoginLayer">
+        <div class="auth-box">
+            <i class="fas fa-times exit-btn" onclick="toggleAdminLayer(false)"></i>
+            <h2 style="color:var(--primary); margin-bottom:20px;">Admin</h2>
+            <input type="text" id="admUser" class="auth-input" placeholder="User">
+            <input type="password" id="admPass" class="auth-input" placeholder="Password">
+            <button class="btn-gold" onclick="verifyAdmin()">Verify</button>
+        </div>
+    </div>
+
+    <div id="authOverlay">
+        <div class="auth-box">
+            <i class="fas fa-shield-alt" style="float:right; color:#222; cursor:pointer;" onclick="toggleAdminLayer(true)"></i>
+            <h1 style="color:var(--primary); margin-bottom:30px;">AUREUM</h1>
+            <div id="logArea">
+                <input type="text" id="lUser" class="auth-input" placeholder="Username">
+                <input type="password" id="lPass" class="auth-input" placeholder="Password">
+                <button class="btn-gold" onclick="login()">Login</button>
+                <p onclick="toggleAuth('reg')" style="margin-top:20px; color:#555; cursor:pointer; font-size:12px;">Create Account</p>
+            </div>
+            <div id="regArea" style="display:none;">
+                <input type="text" id="rUser" class="auth-input" placeholder="Username">
+                <input type="password" id="rPass" class="auth-input" placeholder="Password">
+                <button class="btn-gold" onclick="register()">Register</button>
+                <p onclick="toggleAuth('log')" style="margin-top:20px; color:#555; cursor:pointer; font-size:12px;">Back</p>
+            </div>
+        </div>
+    </div>
+
     <nav id="mainNav">
         <div class="logo">AUREUM</div>
         <div class="header-actions">
-            <div class="search-container"><input type="text" id="searchInput" placeholder="Search..." oninput="renderGrid()"></div>
-            <button class="filter-toggle" onclick="toggleFilters()"><i class="fas fa-sliders-h"></i></button>
+            <div class="search-container">
+                <i class="fas fa-search" style="color:#444;"></i>
+                <input type="text" id="searchInput" placeholder="Search..." oninput="renderGrid()">
+            </div>
+            <button class="filter-btn-toggle" onclick="toggleFilters()"><i class="fas fa-filter"></i></button>
         </div>
-        <div onclick="toggleMenu(true)" style="cursor:pointer; font-size:24px;"><i class="fas fa-bars"></i></div>
+        <div class="menu-trigger" onclick="toggleMenu(true)" style="cursor:pointer; font-size:22px;"><i class="fas fa-bars"></i></div>
     </nav>
 
     <div id="filterOverlay">
-        <div class="filter-row">
-            <div class="filter-item"><label>Price Min</label><input type="number" id="minP" oninput="renderGrid()"></div>
-            <div class="filter-item"><label>Price Max</label><input type="number" id="maxP" oninput="renderGrid()"></div>
-            <div id="dynamicFilterArea" class="filter-row" style="grid-column: span 2; margin:0;"></div>
+        <div class="filter-grid">
+            <div class="filter-item"><label>Min Price</label><input type="number" id="minP" oninput="renderGrid()"></div>
+            <div class="filter-item"><label>Max Price</label><input type="number" id="maxP" oninput="renderGrid()"></div>
+            <div id="dynamicFilterArea" class="filter-grid" style="grid-column: span 2; gap: 10px;"></div>
         </div>
     </div>
 
     <div class="cat-scroll" id="catBar"></div>
     <div class="masonry-grid" id="marketGrid"></div>
 
-    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center;">
-        <div style="background:var(--surface); padding:30px; border-radius:25px; width:90%; max-width:400px; border:1px solid #333;">
-            <h3 style="margin-bottom:20px;">Publish Item</h3>
-            <input type="file" id="fileIn" multiple class="btn-gold" style="background:#222; color:white; margin-bottom:10px;">
-            <input type="text" id="pName" placeholder="Product Name" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; border-radius:10px; color:white;">
-            <input type="number" id="pPrice" placeholder="Price" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; border-radius:10px; color:white;">
-            <select id="pCat" onchange="updatePublishFields(this.value)" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; border-radius:10px; color:white;"></select>
-            <div id="publishDynamic"></div>
-            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish Now</button>
-            <p onclick="closeModal('sellModal')" style="text-align:center; margin-top:15px; cursor:pointer; color:#777;">Cancel</p>
+    <div id="sideMenu">
+        <i class="fas fa-times exit-btn" onclick="toggleMenu(false)"></i>
+        <div style="margin-top:50px;">
+            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uDisp"></span></div>
+            <div class="menu-item" onclick="openModal('sellModal')"><i class="fas fa-plus-square"></i> Sell Item</div>
+            <div class="menu-item" onclick="toggleOverlay('cartOverlay', true)"><i class="fas fa-shopping-cart"></i> Cart</div>
+            <div class="menu-item" onclick="toggleOverlay('wishOverlay', true)"><i class="fas fa-heart"></i> Wishlist</div>
+            <div class="menu-item" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-images"></i> My Posts</div>
+            <div class="menu-item" onclick="toggleOverlay('contactOverlay', true)"><i class="fas fa-envelope"></i> Contact Us</div>
+            <div id="adminPanelBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminPanel', true)"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <div class="menu-item" onclick="logout()" style="margin-top:20px; color:#ff453a;"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
     </div>
+
+    <div id="detailOverlay" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
+        <div id="dContent" style="margin-top:20px;">
+            <div class="image-slider">
+                <img id="dImg" style="width:100%; border-radius:20px;">
+                <i class="fas fa-chevron-right slider-arrow" id="nextArr" onclick="nextSlide()"></i>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:20px;">
+                <h2 id="dTitle"></h2>
+                <div style="display:flex; gap:15px; font-size:22px;">
+                    <i id="dWish" class="fas fa-heart" style="color:#333; cursor:pointer;"></i>
+                    <i id="admPin" class="fas fa-thumbtack" style="display:none; cursor:pointer;"></i>
+                </div>
+            </div>
+            <h3 id="dPrice" style="color:var(--primary); margin:10px 0;"></h3>
+            <p id="dDesc" style="color:var(--text-muted); line-height:1.6;"></p><br>
+            <button id="dWA" class="btn-gold" style="background:#25D366; color:white;">WhatsApp Seller</button>
+            <button id="admDel" class="btn-gold" style="display:none; background:#ff453a; color:white; margin-top:10px;">Delete Post</button>
+        </div>
+    </div>
+
+    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:4000; align-items:center; justify-content:center; padding:20px;">
+        <div class="auth-box" style="max-height:90vh; overflow-y:auto;">
+            <i class="fas fa-times exit-btn" onclick="closeModal('sellModal')"></i>
+            <h3 style="margin-bottom:20px;">Post Item</h3>
+            <input type="file" id="fileIn" multiple class="auth-input">
+            <input type="text" id="pName" class="auth-input" placeholder="Product Name">
+            <input type="number" id="pPrice" class="auth-input" placeholder="Price">
+            <select id="pCat" class="auth-input" onchange="updatePublishDynamic(this.value)"></select>
+            <div id="publishDynArea"></div>
+            <textarea id="pDesc" class="auth-input" placeholder="Description"></textarea>
+            <input type="text" id="pWA" class="auth-input" placeholder="WhatsApp Number">
+            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish</button>
+        </div>
+    </div>
+
+    <div id="contactOverlay" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('contactOverlay', false)"></i>
+        <div style="text-align:center; margin-top:50px;">
+            <i class="fas fa-headset" style="font-size:50px; color:var(--primary);"></i>
+            <h1 style="margin-top:20px;">Support</h1>
+            <p id="cName" style="margin:10px 0; color:var(--text-muted);"></p>
+            <h2 id="cWA" style="color:var(--primary);"></h2>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('adminPanel', false)"></i>
+        <h2>Admin Settings</h2><br>
+        <input type="text" id="setContactName" class="auth-input" placeholder="Display Name">
+        <input type="text" id="setContactWA" class="auth-input" placeholder="WhatsApp (94...)">
+        <button class="btn-gold" onclick="saveSettings()">Save Support Info</button><br><br>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="newCat" class="auth-input" placeholder="New Category">
+            <button class="btn-gold" style="width:80px;" onclick="addCategory()">Add</button>
+        </div>
+        <div id="admCats" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="cartOverlay" class="slide-overlay"><i class="fas fa-times exit-btn" onclick="toggleOverlay('cartOverlay', false)"></i><h2>Cart</h2></div>
+    <div id="wishOverlay" class="slide-overlay"><i class="fas fa-times exit-btn" onclick="toggleOverlay('wishOverlay', false)"></i><h2>Wishlist</h2></div>
+    <div id="myPostsOverlay" class="slide-overlay"><i class="fas fa-times exit-btn" onclick="toggleOverlay('myPostsOverlay', false)"></i><h2>My Posts</h2></div>
 
     <script>
         const firebaseConfig = {
@@ -101,71 +213,68 @@
         const db = firebase.database();
         const IMGBB_KEY = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
 
+        let user = localStorage.getItem('user');
         let allItems = [];
         let currentFilter = 'All';
+        let dImgs = [];
+        let curSlide = 0;
 
-        window.onload = () => { loadCats(); loadItems(); document.getElementById('mainNav').style.display='flex'; };
+        window.onload = () => { if(user) startApp(); loadCats(); loadItems(); loadSettings(); };
 
+        function startApp() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainNav').style.display = 'flex';
+            document.getElementById('uDisp').innerText = user;
+            if(user === 'aureum') document.getElementById('adminPanelBtn').style.display = 'flex';
+        }
+
+        // --- Categories & Filtering ---
         function loadCats() {
             db.ref('categories').on('value', s => {
                 let cats = ['All'];
                 if(s.exists()) Object.values(s.val()).forEach(v => cats.push(v));
-                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-btn ${currentFilter===c?'active':''}" onclick="setFilter('${c}')">${c}</div>`).join('');
+                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-btn ${currentFilter===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
                 document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option>${c}</option>`).join('');
+                document.getElementById('admCats').innerHTML = cats.filter(c=>c!=='All').map(c => `<div style="padding:10px; background:#222; margin-bottom:5px; border-radius:10px; display:flex; justify-content:space-between;">${c} <i class="fas fa-trash" onclick="delCat('${c}')"></i></div>`).join('');
             });
         }
+        function setCat(c) { currentFilter = c; loadCats(); updateFilterDynamic(c); renderGrid(); }
+        function addCategory() { let v = document.getElementById('newCat').value; if(v) db.ref('categories').push(v); document.getElementById('newCat').value=""; }
+        function delCat(n) { db.ref('categories').once('value', s => { s.forEach(c => { if(c.val()===n) c.ref.remove(); }); }); }
 
-        function setFilter(c) {
-            currentFilter = c;
-            loadCats();
-            updateDynamicFilters(c);
-            renderGrid();
-        }
-
-        function updateDynamicFilters(c) {
+        function updateFilterDynamic(c) {
             const area = document.getElementById('dynamicFilterArea');
             area.innerHTML = "";
-            if(c === 'Fashion' || c === 'Clothes') {
+            if(c==='Fashion' || c==='Clothes') {
                 area.innerHTML = `<div class="filter-item"><label>Gender</label><select id="fGen" onchange="renderGrid()"><option value="All">All</option><option>Male</option><option>Female</option></select></div>`;
             } else {
                 area.innerHTML = `<div class="filter-item"><label>Condition</label><select id="fCond" onchange="renderGrid()"><option value="All">All</option><option>Brand New</option><option>Used</option></select></div>`;
             }
         }
-
-        function updatePublishFields(c) {
-            const div = document.getElementById('publishDynamic');
-            div.innerHTML = "";
-            if(c === 'Fashion' || c === 'Clothes') {
-                div.innerHTML = `<select id="pGen" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; border-radius:10px; color:white;"><option>Male</option><option>Female</option></select>`;
-            } else {
-                div.innerHTML = `<select id="pCond" style="width:100%; padding:12px; margin-bottom:10px; background:#000; border:1px solid #333; border-radius:10px; color:white;"><option>Brand New</option><option>Used</option></select>`;
-            }
+        function updatePublishDynamic(c) {
+            const area = document.getElementById('publishDynArea');
+            area.innerHTML = (c==='Fashion' || c==='Clothes') ? `<select id="pGen" class="auth-input"><option>Male</option><option>Female</option></select>` : `<select id="pCond" class="auth-input"><option>Brand New</option><option>Used</option></select>`;
         }
 
+        // --- Data ---
         async function publish() {
-            let files = document.getElementById('fileIn').files;
-            if(files.length === 0) return alert("Select Photos");
-            let btn = document.getElementById('pubBtn');
-            btn.innerText = "Publishing... Please Wait";
-            btn.disabled = true;
-
+            let files = document.getElementById('fileIn').files; if(files.length===0) return alert("Select Image");
+            let btn = document.getElementById('pubBtn'); btn.innerText = "Publishing... Please Wait"; btn.disabled = true;
             let urls = [];
             for(let f of files) {
                 let fd = new FormData(); fd.append("image", f);
                 let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, {method:"POST", body:fd});
-                let d = await res.json();
-                if(d.success) urls.push(d.data.url);
+                let d = await res.json(); if(d.success) urls.push(d.data.url);
             }
-
             await db.ref('items').push({
                 name: document.getElementById('pName').value,
                 price: document.getElementById('pPrice').value,
                 cat: document.getElementById('pCat').value,
                 gen: document.getElementById('pGen')?.value || 'N/A',
                 cond: document.getElementById('pCond')?.value || 'N/A',
-                img: urls[0],
-                imgs: urls,
-                pinned: false
+                desc: document.getElementById('pDesc').value,
+                wa: document.getElementById('pWA').value,
+                img: urls[0], imgs: urls, seller: user, pinned: false
             });
             location.reload();
         }
@@ -182,37 +291,84 @@
             let term = document.getElementById('searchInput').value.toLowerCase();
             let min = parseInt(document.getElementById('minP').value) || 0;
             let max = parseInt(document.getElementById('maxP').value) || 9999999;
-            let genF = document.getElementById('fGen')?.value || 'All';
-            let condF = document.getElementById('fCond')?.value || 'All';
+            let gen = document.getElementById('fGen')?.value || 'All';
+            let cond = document.getElementById('fCond')?.value || 'All';
 
             let filtered = allItems.filter(i => 
-                (currentFilter === 'All' || i.cat === currentFilter) &&
+                (currentFilter==='All' || i.cat===currentFilter) &&
                 (i.name.toLowerCase().includes(term)) &&
-                (i.price >= min && i.price <= max) &&
-                (genF === 'All' || i.gen === genF) &&
-                (condF === 'All' || i.cond === condF)
+                (parseInt(i.price) >= min && parseInt(i.price) <= max) &&
+                (gen==='All' || i.gen===gen) && (cond==='All' || i.cond===cond)
             );
-
             filtered.sort((a,b) => (b.pinned) - (a.pinned));
 
             document.getElementById('marketGrid').innerHTML = filtered.map(i => `
-                <div class="pin-card" style="position:relative;">
-                    ${i.pinned ? '<div class="pin-tag">PINNED</div>' : ''}
+                <div class="pin-card" onclick="openPost('${i.id}')">
+                    ${i.pinned ? '<div class="pin-tag"><i class="fas fa-thumbtack"></i> PINNED</div>' : ''}
                     <img src="${i.img}">
-                    <div style="padding:15px;">
-                        <h4 style="font-size:14px;">${i.name}</h4>
-                        <p style="color:var(--primary); font-weight:700;">Rs. ${parseInt(i.price).toLocaleString()}</p>
+                    <div style="padding:12px;">
+                        <div style="font-weight:700; font-size:13px;">${i.name}</div>
+                        <div style="color:var(--primary); font-weight:700; font-size:12px;">Rs. ${parseInt(i.price).toLocaleString()}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function toggleFilters() {
-            let f = document.getElementById('filterOverlay');
-            f.style.display = f.style.display === 'block' ? 'none' : 'block';
+        function openPost(id) {
+            let i = allItems.find(x=>x.id===id);
+            dImgs = i.imgs || [i.img]; curSlide = 0;
+            document.getElementById('dImg').src = dImgs[0];
+            document.getElementById('nextArr').style.display = dImgs.length > 1 ? 'block' : 'none';
+            document.getElementById('dTitle').innerText = i.name;
+            document.getElementById('dPrice').innerText = "Rs. " + parseInt(i.price).toLocaleString();
+            document.getElementById('dDesc').innerText = i.desc;
+            document.getElementById('dWA').onclick = () => window.open(`https://wa.me/${i.wa}`);
+
+            const pin = document.getElementById('admPin');
+            pin.style.display = user==='aureum' ? 'block' : 'none';
+            pin.style.color = i.pinned ? 'var(--primary)' : '#333';
+            pin.onclick = () => { db.ref('items/'+id).update({pinned: !i.pinned}); toggleOverlay('detailOverlay',false); };
+
+            document.getElementById('admDel').style.display = user==='aureum' ? 'block' : 'none';
+            document.getElementById('admDel').onclick = () => { if(confirm("Delete?")) db.ref('items/'+id).remove(); toggleOverlay('detailOverlay',false); };
+
+            toggleOverlay('detailOverlay', true);
         }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleMenu(s) { alert("Menu under construction for icons sync."); }
+
+        function nextSlide() { curSlide = (curSlide+1)%dImgs.length; document.getElementById('dImg').src = dImgs[curSlide]; }
+
+        // --- Logic & Auth ---
+        function login() { 
+            let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
+            db.ref('users/'+u).once('value', s => { if(s.val()===p) { localStorage.setItem('user',u); location.reload(); } else alert("Error"); });
+        }
+        function register() { db.ref('users/'+document.getElementById('rUser').value).set(document.getElementById('rPass').value).then(()=>toggleAuth('log')); }
+        function toggleAuth(m) { document.getElementById('logArea').style.display = m==='log'?'block':'none'; document.getElementById('regArea').style.display = m==='reg'?'block':'none'; }
+        function toggleAdminLayer(s) { document.getElementById('adminLoginLayer').style.display = s?'flex':'none'; }
+        function verifyAdmin() { if(document.getElementById('admUser').value==='aureum' && document.getElementById('admPass').value==='1234') { localStorage.setItem('user','aureum'); location.reload(); } else alert("Access Denied"); }
+        function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
+        function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
+        function openModal(id) { document.getElementById(id).style.display='flex'; toggleMenu(false); }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function toggleFilters() { let f = document.getElementById('filterOverlay'); f.style.display = f.style.display==='block'?'none':'block'; }
+        function logout() { localStorage.clear(); location.reload(); }
+
+        function saveSettings() {
+            db.ref('settings').set({name: document.getElementById('setContactName').value, wa: document.getElementById('setContactWA').value}).then(()=>alert("Saved"));
+        }
+        function loadSettings() {
+            db.ref('settings').on('value', s => {
+                if(s.exists()) {
+                    let d = s.val();
+                    document.getElementById('cName').innerText = d.name;
+                    document.getElementById('cWA').innerText = "+" + d.wa;
+                    if(user==='aureum') {
+                        document.getElementById('setContactName').value = d.name;
+                        document.getElementById('setContactWA').value = d.wa;
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
