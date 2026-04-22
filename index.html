@@ -13,155 +13,149 @@
     <style>
         :root {
             --primary: #dfbc74; --bg-dark: #0a0a0c;
-            --surface: rgba(255, 255, 255, 0.05);
-            --glass: rgba(15, 15, 18, 0.85); --blur: blur(25px);
+            --surface: #121215; --text-main: #ffffff; --text-muted: #a1a1aa;
+            --glass: rgba(20, 20, 22, 0.7); --blur: blur(25px);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-dark); color: white; min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
 
-        /* Navigation */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .logo { font-weight: 700; color: var(--primary); font-size: 24px; letter-spacing: 1px; }
-        .search-bar { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 8px 15px; width: 45%; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 13px; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-weight: 700; color: var(--primary); font-size: 26px; cursor: pointer; text-transform: uppercase; }
+        
+        .search-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 15px; width: 45%; border: 1px solid rgba(255,255,255,0.05); }
+        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; padding-left: 10px; }
+        .filter-icon { background: var(--primary); color: #000; padding: 10px 15px; border-radius: 10px; cursor: pointer; margin-left: 10px; }
 
-        /* Filter Section */
-        .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
-        .cat-bar::-webkit-scrollbar { display: none; }
-        .cat-chip { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
-        .cat-chip.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; }
+        /* Category Bar */
+        .cat-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
+        .cat-btn { padding: 8px 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+        .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        /* Grid System */
-        .market-container { 
-            column-count: 2; column-gap: 15px; padding: 10px 5%; width: 100%;
-        }
-        @media (min-width: 768px) { .market-container { column-count: 4; } }
+        /* Pinterest Masonry Layout */
+        .masonry-grid { column-count: 2; column-gap: 15px; padding: 0 5%; width: 100%; }
+        @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
+        
+        .pin-card { break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; cursor: pointer; transition: 0.3s; }
+        .pin-card img { width: 100%; display: block; }
+        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 9px; z-index: 5; }
 
-        .item-card { 
-            break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 18px; 
-            border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; cursor: pointer;
-        }
-        .item-card img { width: 100%; height: auto; display: block; }
-        .item-info { padding: 12px; }
-        .item-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
-        .item-price { color: var(--primary); font-weight: 700; font-size: 12px; }
-        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 3px 7px; border-radius: 6px; font-size: 9px; font-weight: 800; }
+        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92vh; background: var(--bg-dark); z-index: 3000; transition: 0.5s; padding: 25px; overflow-y: auto; }
+        .slide-overlay.active { bottom: 0; }
+        .exit-btn { float: right; font-size: 24px; color: var(--text-muted); cursor: pointer; }
 
-        /* Overlays */
-        .overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 93vh; background: var(--bg-dark); z-index: 2500; transition: 0.5s cubic-bezier(0.1, 0.7, 0.1, 1); padding: 25px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 25px 25px 0 0; }
-        .overlay.active { bottom: 0; }
-        .close-btn { float: right; font-size: 24px; cursor: pointer; opacity: 0.6; }
-
-        /* UI Elements */
-        .input-box { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #222; color: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; }
+        .auth-input, select, textarea { width: 100%; background: #0c0c0e; border: 1px solid #222; color: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; outline: none; }
         .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* Side Menu */
-        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 3000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.1); }
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 4000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.05); }
         #sideMenu.active { right: 0; }
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; color: white; font-weight: 600; margin-bottom: 5px; cursor: pointer; }
-        .menu-item i { width: 20px; color: var(--primary); }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 15px; cursor: pointer; font-weight: 600; color: white; border-radius: 12px; }
+        .menu-item i { color: var(--primary); width: 20px; }
 
         #authOverlay { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .admin-shield-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; color: #111; cursor: pointer; transition: 0.3s; }
+        .admin-shield-btn:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 
     <div id="authOverlay">
-        <div style="width: 100%; max-width: 350px; text-align: center; position: relative;">
-            <i class="fas fa-shield-alt" id="shieldBtn" onclick="toggleAdmMode()" style="position:absolute; top:-40px; right:0; cursor:pointer; color:#111;"></i>
-            <h1 style="color:var(--primary); margin-bottom:30px;">AUREUM</h1>
-            <div id="loginSection">
-                <input type="text" id="lUser" class="input-box" placeholder="Username">
-                <input type="password" id="lPass" class="input-box" placeholder="Password">
-                <button class="btn-gold" onclick="login()">Sign In</button>
-                <p onclick="toggleAuth('reg')" style="margin-top:20px; color:gray; cursor:pointer; font-size:13px;">New? Register Account</p>
+        <div style="width: 100%; max-width: 380px; text-align: center; position: relative;">
+            <i class="fas fa-shield-alt admin-shield-btn" id="shieldBtn" onclick="toggleAdminMode()"></i>
+            <h1 style="color:var(--primary); margin-bottom:30px; letter-spacing: 2px;">AUREUM</h1>
+            
+            <div id="loginFields">
+                <input type="text" id="lUser" class="auth-input" placeholder="Username">
+                <input type="password" id="lPass" class="auth-input" placeholder="Password">
+                <button class="btn-gold" onclick="login()">Login</button>
+                <p id="regToggle" onclick="toggleAuth('reg')" style="margin-top:20px; color:var(--text-muted); cursor:pointer; font-size: 13px;">Create Account</p>
             </div>
-            <div id="regSection" style="display:none;">
-                <input type="text" id="rUser" class="input-box" placeholder="Create Username">
-                <input type="password" id="rPass" class="input-box" placeholder="Create Password">
+
+            <div id="regFields" style="display:none;">
+                <input type="text" id="rUser" class="auth-input" placeholder="Choose Username">
+                <input type="password" id="rPass" class="auth-input" placeholder="Password">
                 <button class="btn-gold" onclick="register()">Register</button>
-                <p onclick="toggleAuth('log')" style="margin-top:20px; color:gray; cursor:pointer; font-size:13px;">Back to Login</p>
+                <p onclick="toggleAuth('log')" style="margin-top:20px; color:var(--text-muted); cursor:pointer; font-size: 13px;">Back to Login</p>
             </div>
         </div>
     </div>
 
     <nav>
         <div class="logo">AUREUM</div>
-        <div class="search-bar">
-            <i class="fas fa-search" style="color:#555;"></i>
-            <input type="text" id="searchInp" placeholder="Search..." oninput="renderMain()">
+        <div class="search-container">
+            <i class="fas fa-search" style="color:#444;"></i>
+            <input type="text" id="searchInput" placeholder="Search items..." oninput="renderGrid()">
         </div>
-        <div onclick="toggleMenu(true)"><i class="fas fa-bars fa-lg"></i></div>
+        <div class="filter-icon" onclick="toggleOverlay('adminPanel', true)" id="filterBtn" style="display:none;"><i class="fas fa-sliders-h"></i></div>
+        <div onclick="toggleMenu(true)" style="cursor:pointer; margin-left: 15px;"><i class="fas fa-bars fa-lg"></i></div>
     </nav>
 
-    <div class="cat-bar" id="catBar"></div>
-    <div class="market-container" id="mainGrid"></div>
+    <div class="cat-scroll" id="catBar"></div>
+    <div class="masonry-grid" id="marketGrid"></div>
 
     <div id="sideMenu">
-        <i class="fas fa-times close-btn" onclick="toggleMenu(false)"></i>
+        <i class="fas fa-times exit-btn" onclick="toggleMenu(false)"></i>
         <div style="margin-top:50px;">
-            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="dispName"></span></div>
-            <div class="menu-item" onclick="openPost()"><i class="fas fa-plus-circle"></i> Sell Item</div>
-            <div class="menu-item" onclick="toggleOverlay('myPostOverlay', true)"><i class="fas fa-list"></i> My Posts</div>
-            <div class="menu-item" onclick="toggleOverlay('supportOverlay', true)"><i class="fas fa-headset"></i> Help & Support</div>
-            <div id="admMenu" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminOverlay', true)"><i class="fas fa-tools"></i> Admin Panel</div>
-            <div class="menu-item" onclick="logout()" style="margin-top:30px; color:#ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uDisp"></span></div>
+            <div class="menu-item" onclick="openModal('sellModal')"><i class="fas fa-plus-square"></i> Sell Item</div>
+            <div class="menu-item" onclick="toggleOverlay('wishOverlay', true)"><i class="fas fa-heart"></i> Wishlist</div>
+            <div class="menu-item" onclick="toggleOverlay('contactOverlay', true)"><i class="fas fa-headset"></i> Contact Us</div>
+            <div id="admBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminPanel', true)"><i class="fas fa-user-shield"></i> Admin Settings</div>
+            <div class="menu-item" onclick="logout()" style="margin-top:20px; color:#ff453a;"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
     </div>
 
-    <div id="detailOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
-        <div id="detailBody" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="myPostOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('myPostOverlay', false)"></i>
-        <h2>Manage My Posts</h2><br>
-        <div id="myGrid" class="market-container"></div>
-    </div>
-
-    <div id="supportOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('supportOverlay', false)"></i>
-        <div style="text-align:center; margin-top:60px;">
-            <i class="fas fa-headset" style="font-size:60px; color:var(--primary);"></i>
-            <h2 style="margin-top:20px;">Customer Support</h2>
-            <p style="color:gray; margin:15px 0;">Contact us for any help regarding your account or ads.</p>
-            <h1 id="supportNumDisp" style="color:var(--primary); letter-spacing:2px;"></h1>
-            <button class="btn-gold" style="margin-top:20px; background:#25D366; color:white;" id="supportWA">Chat with Support</button>
-        </div>
-    </div>
-
-    <div id="adminOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('adminOverlay', false)"></i>
-        <h2>Admin Settings</h2><br>
-        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px; margin-bottom:20px;">
-            <h4>Manage Categories</h4><br>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="newCatInp" class="input-box" placeholder="Category Name" style="margin:0;">
-                <button class="btn-gold" style="width:100px;" onclick="addCat()">Add</button>
+    <div id="detailOverlay" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
+        <div id="dContent" style="margin-top:20px;">
+            <img id="dImg" style="width:100%; border-radius:20px;">
+            <div style="display:flex; justify-content:space-between; align-items: center; margin-top:20px;">
+                <h2 id="dTitle"></h2>
+                <div style="display:flex; gap:20px; font-size: 24px;">
+                    <i id="dWishBtn" class="fas fa-heart" style="cursor:pointer;" onclick="toggleWishlist()"></i>
+                    <i id="admPin" class="fas fa-thumbtack" style="display:none; cursor:pointer;" onclick="togglePin()"></i>
+                </div>
             </div>
-            <div id="admCatList" style="margin-top:15px;"></div>
-        </div>
-        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px;">
-            <h4>Update Support Contact</h4><br>
-            <input type="text" id="supNumInp" class="input-box" placeholder="WhatsApp (e.g. 712345678)">
-            <button class="btn-gold" onclick="updateSupport()">Update Support Number</button>
+            <h3 id="dPrice" style="color:var(--primary); margin:10px 0;"></h3>
+            <p id="dDesc" style="color:var(--text-muted); line-height: 1.6;"></p><br>
+            <button id="dWA" class="btn-gold" style="background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> WhatsApp Seller</button>
+            <button id="admDel" class="btn-gold" style="display:none; background:#ff453a; color:white; margin-top:10px;" onclick="adminDelete()">Delete Post</button>
         </div>
     </div>
 
-    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center; padding:20px;">
-        <div style="width:100%; max-width:400px; background:#0c0c0e; padding:25px; border-radius:20px; border:1px solid #222;">
-            <i class="fas fa-times close-btn" onclick="document.getElementById('sellModal').style.display='none'"></i>
-            <h3 style="margin-bottom:20px; color:var(--primary);">Post New Ad</h3>
-            <input type="file" id="imgF" class="input-box">
-            <input type="text" id="pT" class="input-box" placeholder="Item Name">
-            <input type="number" id="pP" class="input-box" placeholder="Price">
-            <select id="pC" class="input-box"></select>
-            <textarea id="pD" class="input-box" placeholder="Description"></textarea>
-            <input type="text" id="pW" class="input-box" placeholder="WhatsApp Number">
-            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish Post</button>
+    <div id="adminPanel" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('adminPanel', false)"></i>
+        <h2 style="margin-bottom:25px;">Admin Dashboard</h2>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <input type="text" id="newCat" class="auth-input" placeholder="Category Name" style="margin-bottom:0;">
+            <button class="btn-gold" style="width:100px;" onclick="addCat()">Add</button>
         </div>
+        <div id="admCatList"></div>
+    </div>
+
+    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:5000; align-items:center; justify-content:center; padding:20px;">
+        <div style="width:100%; max-width:400px; background:var(--surface); padding:25px; border-radius:20px;">
+            <i class="fas fa-times exit-btn" onclick="closeModal('sellModal')"></i>
+            <h3 style="margin-bottom:20px; color: var(--primary);">Publish Item</h3>
+            <input type="file" id="fileIn" class="auth-input">
+            <input type="text" id="pName" class="auth-input" placeholder="Item Name">
+            <input type="number" id="pPrice" class="auth-input" placeholder="Price">
+            <select id="pCat" class="auth-input"></select>
+            <textarea id="pDesc" class="auth-input" placeholder="Description"></textarea>
+            <input type="text" id="pWA" class="auth-input" placeholder="WhatsApp">
+            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish</button>
+        </div>
+    </div>
+
+    <div id="wishOverlay" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('wishOverlay', false)"></i>
+        <h2 style="margin-bottom:20px;">My Wishlist</h2>
+        <div id="wishList" class="masonry-grid"></div>
+    </div>
+
+    <div id="contactOverlay" class="slide-overlay">
+        <i class="fas fa-times exit-btn" onclick="toggleOverlay('contactOverlay', false)"></i>
+        <div style="text-align:center; margin-top:60px;"><i class="fas fa-headset" style="font-size:60px; color:var(--primary);"></i><h2 id="dispSupportName">Support</h2><h1 id="dispSupportNum" style="color:var(--primary);"></h1></div>
     </div>
 
     <script>
@@ -176,137 +170,158 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const IMGBB = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
+        const IMGBB_KEY = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
 
         let user = localStorage.getItem('user');
-        let isAdmLogin = false;
+        let isAdminMode = false;
         let allItems = [];
-        let curCat = "All";
+        let currentCat = 'All';
+        let currentPostId = null;
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
 
-        window.onload = () => { if(user) initApp(); loadCats(); loadItems(); loadSupport(); };
+        window.onload = () => { if(user) startApp(); loadCats(); loadItems(); };
 
-        function initApp() {
+        function startApp() {
             document.getElementById('authOverlay').style.display = 'none';
-            document.getElementById('dispName').innerText = user;
-            if(user === 'aureum') document.getElementById('admMenu').style.display = 'flex';
-        }
-
-        function toggleAdmMode() { isAdmLogin = !isAdmLogin; document.getElementById('shieldBtn').style.color = isAdmLogin ? '#dfbc74' : '#111'; }
-        function login() {
-            let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
-            if(isAdmLogin) {
-                if(u === 'aureum' && p === '1234') { localStorage.setItem('user', u); location.reload(); }
-                else alert("Admin Error");
-            } else {
-                db.ref('users/'+u).once('value', s => { if(s.val() === p) { localStorage.setItem('user', u); location.reload(); } else alert("Error"); });
+            document.getElementById('uDisp').innerText = user;
+            if(user === 'aureum') {
+                document.getElementById('admBtn').style.display = 'flex';
+                document.getElementById('filterBtn').style.display = 'block';
             }
         }
-        function toggleAuth(m) {
-            document.getElementById('loginSection').style.display = m==='log'?'block':'none';
-            document.getElementById('regSection').style.display = m==='reg'?'block':'none';
+
+        // --- Auth Logic ---
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            document.getElementById('shieldBtn').style.color = isAdminMode ? '#dfbc74' : '#111';
+            document.getElementById('regToggle').style.display = isAdminMode ? 'none' : 'block';
         }
+
+        function login() {
+            let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
+            if (isAdminMode) {
+                if (u === 'aureum' && p === '1234') {
+                    localStorage.setItem('user', 'aureum');
+                    location.reload();
+                } else alert("Admin Access Denied");
+            } else {
+                db.ref('users/'+u).once('value', s => {
+                    if(s.val() === p) { localStorage.setItem('user', u); location.reload(); }
+                    else alert("Invalid Details");
+                });
+            }
+        }
+
+        function toggleAuth(m) {
+            document.getElementById('loginFields').style.display = m==='log'?'block':'none';
+            document.getElementById('regFields').style.display = m==='reg'?'block':'none';
+        }
+
         function register() { db.ref('users/'+document.getElementById('rUser').value).set(document.getElementById('rPass').value).then(()=>toggleAuth('log')); }
         function logout() { localStorage.clear(); location.reload(); }
 
-        // --- Core ---
+        // --- Market Logic ---
         function loadItems() {
             db.ref('items').on('value', s => {
                 allItems = [];
-                s.forEach(c => allItems.push({id: c.key, ...c.val()}));
-                renderMain();
+                s.forEach(c => allItems.push({id:c.key, ...c.val()}));
+                renderGrid();
+                renderWishlist();
             });
         }
 
-        function renderMain() {
-            let search = document.getElementById('searchInp').value.toLowerCase();
-            let filtered = allItems.filter(i => (curCat === "All" || i.cat === curCat) && i.title.toLowerCase().includes(search));
-            filtered.sort((a,b) => (b.pin - a.pin) || (b.time - a.time));
+        function renderGrid() {
+            let term = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = allItems.filter(i => (currentCat==='All' || i.cat===currentCat) && i.name.toLowerCase().includes(term));
+            
+            // Sort: Pinned first, then Newest first
+            filtered.sort((a,b) => (b.pinned - a.pinned) || (b.time - a.time));
 
-            document.getElementById('mainGrid').innerHTML = filtered.map(i => `
-                <div class="item-card" onclick="viewPost('${i.id}')">
-                    ${i.pin ? '<div class="pin-tag">PINNED</div>' : ''}
+            document.getElementById('marketGrid').innerHTML = filtered.map(i => `
+                <div class="pin-card" onclick="openPost('${i.id}')">
+                    ${i.pinned ? '<div class="pin-tag"><i class="fas fa-thumbtack"></i> PINNED</div>' : ''}
                     <img src="${i.img}">
-                    <div class="item-info">
-                        <div class="item-name">${i.title}</div>
-                        <div class="item-price">Rs. ${parseInt(i.price).toLocaleString()}</div>
-                    </div>
-                </div>
-            `).join('');
-
-            let mine = allItems.filter(i => i.owner === user);
-            document.getElementById('myGrid').innerHTML = mine.map(i => `
-                <div class="item-card">
-                    <img src="${i.img}">
-                    <div class="item-info">
-                        <div>${i.title}</div>
-                        <button onclick="delPost('${i.id}')" style="background:#ff4d4d; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:10px; font-size:11px;">Delete</button>
+                    <div style="padding:15px;">
+                        <div style="font-weight:700; font-size:14px;">${i.name}</div>
+                        <div style="color:var(--primary); font-weight:700; margin-top:5px;">Rs. ${parseInt(i.price).toLocaleString()}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function viewPost(id) {
-            let i = allItems.find(x => x.id === id);
-            document.getElementById('detailBody').innerHTML = `
-                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px;">
-                <h2>${i.title}</h2>
-                <h3 style="color:var(--primary); margin:10px 0;">Rs. ${parseInt(i.price).toLocaleString()}</h3>
-                <p style="color:gray; line-height:1.6;">${i.desc}</p><br>
-                <button class="btn-gold" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/94${i.wa}')">Chat via WhatsApp</button>
-                ${user === 'aureum' ? `<button class="btn-gold" style="margin-top:10px;" onclick="pinPost('${id}')">Pin/Unpin Ad</button>` : ''}
-            `;
+        function openPost(id) {
+            currentPostId = id;
+            let i = allItems.find(x=>x.id===id);
+            document.getElementById('dImg').src = i.img;
+            document.getElementById('dTitle').innerText = i.name;
+            document.getElementById('dPrice').innerText = "Rs. " + parseInt(i.price).toLocaleString();
+            document.getElementById('dDesc').innerText = i.desc;
+            document.getElementById('dWA').onclick = () => window.open(`https://wa.me/${i.wa}`);
+            
+            document.getElementById('admPin').style.display = user==='aureum' ? 'block' : 'none';
+            document.getElementById('admPin').style.color = i.pinned ? 'var(--primary)' : '#333';
+            document.getElementById('admDel').style.display = user==='aureum' ? 'block' : 'none';
+            document.getElementById('dWishBtn').style.color = wishlist.includes(id) ? 'red' : '#333';
+
             toggleOverlay('detailOverlay', true);
         }
 
-        async function publish() {
-            let file = document.getElementById('imgF').files[0]; if(!file) return;
-            let btn = document.getElementById('pubBtn'); btn.innerText = "Processing..."; btn.disabled = true;
-            
-            let fd = new FormData(); fd.append("image", file);
-            let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB, { method: "POST", body: fd });
-            let d = await res.json();
+        function togglePin() {
+            let i = allItems.find(x=>x.id===currentPostId);
+            db.ref('items/'+currentPostId).update({pinned: !i.pinned});
+            toggleOverlay('detailOverlay', false);
+        }
 
-            if(d.success) {
+        function adminDelete() { if(confirm("Delete?")) { db.ref('items/'+currentPostId).remove(); toggleOverlay('detailOverlay', false); } }
+
+        // --- Category Logic ---
+        function loadCats() {
+            db.ref('categories').on('value', s => {
+                let cats = ['All'];
+                if(s.exists()) s.forEach(c => cats.push(c.val()));
+                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-btn ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
+                document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option>${c}</option>`).join('');
+            });
+        }
+        function setCat(c) { currentCat = c; loadCats(); renderGrid(); }
+        function addCat() { let v = document.getElementById('newCat').value; if(v) db.ref('categories').push(v); document.getElementById('newCat').value=""; }
+
+        // --- Helpers ---
+        async function publish() {
+            let file = document.getElementById('fileIn').files[0];
+            let btn = document.getElementById('pubBtn'); btn.disabled = true;
+            let fd = new FormData(); fd.append("image", file);
+            let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, { method: "POST", body: fd });
+            let d = await res.json();
+            if (d.success) {
                 db.ref('items').push({
-                    title: document.getElementById('pT').value,
-                    price: document.getElementById('pP').value,
-                    cat: document.getElementById('pC').value,
-                    desc: document.getElementById('pD').value,
-                    wa: document.getElementById('pW').value,
-                    img: d.data.url, owner: user, time: Date.now(), pin: false
-                }).then(() => location.reload());
+                    name: document.getElementById('pName').value,
+                    price: document.getElementById('pPrice').value,
+                    cat: document.getElementById('pCat').value,
+                    desc: document.getElementById('pDesc').value,
+                    wa: document.getElementById('pWA').value,
+                    img: d.data.url, seller: user, time: Date.now(), pinned: false
+                }).then(()=>location.reload());
             }
         }
 
-        // --- Helpers ---
-        function loadCats() {
-            db.ref('cats').on('value', s => {
-                let list = ["All"]; if(s.exists()) s.forEach(c => list.push(c.val()));
-                document.getElementById('catBar').innerHTML = list.map(c => `<div class="cat-chip ${curCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
-                document.getElementById('pC').innerHTML = list.filter(x=>x!=="All").map(c => `<option>${c}</option>`).join('');
-                if(user === 'aureum') {
-                    let html = ''; s.forEach(c => html += `<div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:10px;">${c.val()} <i class="fas fa-trash" onclick="db.ref('cats/${c.key}').remove()"></i></div>`);
-                    document.getElementById('admCatList').innerHTML = html;
-                }
-            });
+        function toggleWishlist() {
+            if(wishlist.includes(currentPostId)) wishlist = wishlist.filter(id => id !== currentPostId);
+            else wishlist.push(currentPostId);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            document.getElementById('dWishBtn').style.color = wishlist.includes(currentPostId) ? 'red' : '#333';
+            renderWishlist();
         }
-        function setCat(c) { curCat = c; loadCats(); renderMain(); }
-        function addCat() { let v = document.getElementById('newCatInp').value; if(v) db.ref('cats').push(v); document.getElementById('newCatInp').value=""; }
-        
-        function loadSupport() {
-            db.ref('support').on('value', s => {
-                let num = s.val() || "000000000";
-                document.getElementById('supportNumDisp').innerText = "+94 " + num;
-                document.getElementById('supportWA').onclick = () => window.open('https://wa.me/94' + num);
-            });
-        }
-        function updateSupport() { let n = document.getElementById('supNumInp').value; if(n) db.ref('support').set(n).then(()=>alert("Updated")); }
 
-        function delPost(id) { if(confirm("Delete?")) db.ref('items/'+id).remove(); }
-        function pinPost(id) { let i = allItems.find(x=>x.id===id); db.ref('items/'+id).update({pin: !i.pin}); toggleOverlay('detailOverlay', false); }
+        function renderWishlist() {
+            let list = allItems.filter(i => wishlist.includes(i.id));
+            document.getElementById('wishList').innerHTML = list.map(i => `<div class="pin-card" onclick="openPost('${i.id}')"><img src="${i.img}"><div style="padding:10px;">${i.name}</div></div>`).join('');
+        }
+
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
-        function openPost() { document.getElementById('sellModal').style.display='flex'; toggleMenu(false); }
+        function openModal(id) { document.getElementById(id).style.display='flex'; toggleMenu(false); }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
     </script>
 </body>
 </html>
