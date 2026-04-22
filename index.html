@@ -1,175 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aureum | Premium Market</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aureum | Premium Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #dfbc74; --bg-dark: #0a0a0c;
+            --surface: rgba(255, 255, 255, 0.05);
+            --glass: rgba(15, 15, 18, 0.8); --blur: blur(25px);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-dark); color: white; min-height: 100vh; overflow-x: hidden; }
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .logo { font-weight: 700; color: var(--primary); font-size: 22px; letter-spacing: 1px; text-transform: uppercase; }
+        .search-bar { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 8px 15px; width: 45%; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 13px; }
 
-<!-- 🔥 Masonry Library -->
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+        /* Filter Section */
+        .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
+        .cat-bar::-webkit-scrollbar { display: none; }
+        .cat-chip { padding: 8px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .cat-chip.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; }
 
-<style>
-:root {
-    --primary: #dfbc74;
-    --bg-dark: #0a0a0c;
-    --surface: #121215;
-}
+        /* Fixed Grid Layout */
+        .market-container { 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            padding: 10px 5%;
+            align-items: start;
+        }
+        @media (min-width: 768px) { .market-container { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+        .item-card { 
+            background: var(--surface); border-radius: 18px; 
+            border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; cursor: pointer;
+            transition: 0.3s;
+        }
+        .item-card:active { transform: scale(0.97); }
+        .item-card img { width: 100%; height: auto; display: block; background: #1a1a1a; }
+        .item-info { padding: 12px; }
+        .item-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+        .item-price { color: var(--primary); font-weight: 700; font-size: 12px; }
+        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 3px 7px; border-radius: 6px; font-size: 9px; font-weight: 800; z-index: 5; }
 
-body {
-    background: var(--bg-dark);
-    color: white;
-}
+        /* Slide Overlays */
+        .overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 93vh; background: var(--bg-dark); z-index: 2500; transition: 0.5s cubic-bezier(0.1, 0.7, 0.1, 1); padding: 25px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 25px 25px 0 0; }
+        .overlay.active { bottom: 0; }
+        .close-btn { float: right; font-size: 24px; cursor: pointer; opacity: 0.6; }
 
-/* NAV */
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 5%;
-    background: rgba(20,20,22,0.7);
-    backdrop-filter: blur(20px);
-}
+        /* Side Menu */
+        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 3000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.1); }
+        #sideMenu.active { right: 0; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; color: white; font-weight: 600; margin-bottom: 5px; cursor: pointer; }
+        .menu-item i { width: 20px; color: var(--primary); }
 
-.logo {
-    color: var(--primary);
-    font-weight: 700;
-}
+        /* Inputs & Buttons */
+        .input-box { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #222; color: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; }
+        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-.search-container {
-    width: 50%;
-    display: flex;
-    background: #111;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.search-container input {
-    background: transparent;
-    border: none;
-    color: white;
-    width: 100%;
-    outline: none;
-}
-
-/* GRID */
-.masonry-grid {
-    padding: 15px 5%;
-}
-
-/* CARD */
-.pin-card {
-    width: 100%;
-    margin-bottom: 15px;
-    background: var(--surface);
-    border-radius: 18px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.pin-card img {
-    width: 100%;
-}
-
-.pin-card:hover {
-    transform: translateY(-5px);
-}
-
-/* TAG */
-.pin-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--primary);
-    color: black;
-    padding: 4px 8px;
-    font-size: 10px;
-    border-radius: 6px;
-}
-</style>
+        #authOverlay { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .shield-btn { position: absolute; top: 20px; right: 20px; color: #111; cursor: pointer; font-size: 20px; }
+    </style>
 </head>
-
 <body>
 
-<nav>
-    <div class="logo">AUREUM</div>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search..." oninput="renderGrid()">
-    </div>
-</nav>
-
-<div id="marketGrid" class="masonry-grid"></div>
-
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyDNfce5v0BakfXV0F1aJ_teEj0TvFtPlbg",
-    authDomain: "aureum-5f6f4.firebaseapp.com",
-    databaseURL: "https://aureum-5f6f4-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "aureum-5f6f4"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let allItems = [];
-
-/* LOAD ITEMS */
-function loadItems() {
-    db.ref('items').on('value', s => {
-        allItems = [];
-        s.forEach(c => allItems.push({id:c.key, ...c.val()}));
-        renderGrid();
-    });
-}
-
-/* RENDER GRID */
-function renderGrid() {
-    let term = document.getElementById('searchInput').value.toLowerCase();
-
-    let filtered = allItems.filter(i =>
-        i.name.toLowerCase().includes(term)
-    );
-
-    filtered.sort((a,b)=> (b.pinned - a.pinned) || (b.time - a.time));
-
-    let grid = document.getElementById('marketGrid');
-
-    grid.innerHTML = filtered.map(i => `
-        <div class="pin-card">
-            ${i.pinned ? '<div class="pin-tag">PINNED</div>' : ''}
-            <img src="${i.img}">
-            <div style="padding:12px;">
-                <div style="font-weight:700;">${i.name}</div>
-                <div style="color:var(--primary);">Rs. ${parseInt(i.price).toLocaleString()}</div>
+    <div id="authOverlay">
+        <div style="width: 100%; max-width: 350px; text-align: center;">
+            <i class="fas fa-shield-alt shield-btn" id="sBtn" onclick="toggleAdmMode()"></i>
+            <h1 style="color:var(--primary); margin-bottom:30px; letter-spacing: 2px;">AUREUM</h1>
+            <div id="logBox">
+                <input type="text" id="lUser" class="input-box" placeholder="Username">
+                <input type="password" id="lPass" class="input-box" placeholder="Password">
+                <button class="btn-gold" onclick="login()">Login</button>
+                <p id="regTrigger" onclick="toggleAuth('reg')" style="margin-top:20px; color:gray; cursor:pointer; font-size:13px;">Create Account</p>
+            </div>
+            <div id="regBox" style="display:none;">
+                <input type="text" id="rUser" class="input-box" placeholder="New Username">
+                <input type="password" id="rPass" class="input-box" placeholder="New Password">
+                <button class="btn-gold" onclick="register()">Register</button>
+                <p onclick="toggleAuth('log')" style="margin-top:20px; color:gray; cursor:pointer; font-size:13px;">Back to Login</p>
             </div>
         </div>
-    `).join('');
+    </div>
 
-    // 🔥 APPLY MASONRY
-    setTimeout(() => {
-        new Masonry(grid, {
-            itemSelector: '.pin-card',
-            columnWidth: '.pin-card',
-            percentPosition: true,
-            gutter: 15
-        });
-    }, 200);
-}
+    <nav>
+        <div class="logo">AUREUM</div>
+        <div class="search-bar">
+            <i class="fas fa-search" style="color:#555;"></i>
+            <input type="text" id="searchInp" placeholder="Search..." oninput="renderItems()">
+        </div>
+        <div onclick="toggleMenu(true)"><i class="fas fa-bars fa-lg"></i></div>
+    </nav>
 
-loadItems();
-</script>
+    <div class="cat-bar" id="catBar"></div>
+    <div class="market-container" id="grid"></div>
 
+    <div id="sideMenu">
+        <i class="fas fa-times close-btn" onclick="toggleMenu(false)"></i>
+        <div style="margin-top:50px;">
+            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uName"></span></div>
+            <div class="menu-item" onclick="openPostModal()"><i class="fas fa-plus-square"></i> Sell Item</div>
+            <div class="menu-item" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-list-ul"></i> My Posts</div>
+            <div class="menu-item" onclick="toggleOverlay('wishlistOverlay', true)"><i class="fas fa-heart"></i> Wishlist</div>
+            <div class="menu-item" onclick="toggleOverlay('supportOverlay', true)"><i class="fas fa-headset"></i> Support</div>
+            <div id="admBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminOverlay', true)"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <div class="menu-item" onclick="logout()" style="margin-top:30px; color:#ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </div>
+    </div>
+
+    <div id="detailOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
+        <div id="dContent" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="myPostsOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('myPostsOverlay', false)"></i>
+        <h2>My Ads</h2><br>
+        <div id="myGrid" class="market-container"></div>
+    </div>
+
+    <div id="wishlistOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('wishlistOverlay', false)"></i>
+        <h2>Wishlist</h2><br>
+        <div id="wishGrid" class="market-container"></div>
+    </div>
+
+    <div id="supportOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('supportOverlay', false)"></i>
+        <div style="text-align:center; margin-top:60px;">
+            <i class="fas fa-headset" style="font-size:60px; color:var(--primary);"></i>
+            <h2 style="margin-top:20px;">Customer Support</h2>
+            <p style="color:gray; margin:15px 0;">Need help with your account or ads?</p>
+            <h1 id="supNumDisp" style="color:var(--primary); letter-spacing:2px;"></h1>
+            <button class="btn-gold" style="margin-top:20px; background:#25D366; color:white;" id="supWA">WhatsApp Support</button>
+        </div>
+    </div>
+
+    <div id="adminOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('adminOverlay', false)"></i>
+        <h2>Admin Settings</h2><br>
+        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px; margin-bottom:20px;">
+            <h4>Manage Categories</h4><br>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="nCatInp" class="input-box" placeholder="Category Name" style="margin:0;">
+                <button class="btn-gold" style="width:100px;" onclick="addCat()">Add</button>
+            </div>
+            <div id="admCatList" style="margin-top:15px;"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px;">
+            <h4>Update Support Contact</h4><br>
+            <input type="text" id="supInp" class="input-box" placeholder="e.g. 712345678">
+            <button class="btn-gold" onclick="setSupport()">Update Number</button>
+        </div>
+    </div>
+
+    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center; padding:20px;">
+        <div style="width:100%; max-width:400px; background:#0c0c0e; padding:25px; border-radius:20px; border:1px solid #222;">
+            <i class="fas fa-times close-btn" onclick="document.getElementById('sellModal').style.display='none'"></i>
+            <h3 style="margin-bottom:20px; color:var(--primary);">Sell Product</h3>
+            <input type="file" id="fIn" class="input-box">
+            <input type="text" id="pTitle" class="input-box" placeholder="Item Name">
+            <input type="number" id="pPrice" class="input-box" placeholder="Price">
+            <select id="pCatInp" class="input-box"></select>
+            <textarea id="pDesc" class="input-box" placeholder="Description"></textarea>
+            <input type="text" id="pWA" class="input-box" placeholder="WhatsApp Number">
+            <button class="btn-gold" id="pBtn" onclick="publish()">Publish</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNfce5v0BakfXV0F1aJ_teEj0TvFtPlbg",
+            authDomain: "aureum-5f6f4.firebaseapp.com",
+            databaseURL: "https://aureum-5f6f4-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "aureum-5f6f4",
+            storageBucket: "aureum-5f6f4.firebasestorage.app",
+            messagingSenderId: "20685576526",
+            appId: "1:20685576526:web:735bae011402ac99c0261f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const IMGBB = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
+
+        let user = localStorage.getItem('user');
+        let isAdmMode = false;
+        let allItems = [];
+        let curCat = "All";
+        let wishList = JSON.parse(localStorage.getItem('wishlist') || '[]');
+
+        window.onload = () => { if(user) init(); loadCats(); loadItems(); loadSupport(); };
+
+        function init() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('uName').innerText = user;
+            if(user === 'aureum') document.getElementById('admBtn').style.display = 'flex';
+        }
+
+        // --- Auth ---
+        function toggleAdmMode() { isAdmMode = !isAdmMode; document.getElementById('sBtn').style.color = isAdmMode ? '#dfbc74' : '#111'; }
+        function login() {
+            let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
+            if(isAdmMode) {
+                if(u === 'aureum' && p === '1234') { localStorage.setItem('user', u); location.reload(); }
+                else alert("Admin access denied");
+            } else {
+                db.ref('users/'+u).once('value', s => { if(s.val() === p) { localStorage.setItem('user', u); location.reload(); } else alert("Wrong password"); });
+            }
+        }
+        function toggleAuth(m) {
+            document.getElementById('logBox').style.display = m==='log'?'block':'none';
+            document.getElementById('regBox').style.display = m==='reg'?'block':'none';
+            document.getElementById('regTrigger').style.display = isAdmMode ? 'none' : 'block';
+        }
+        function register() { db.ref('users/'+document.getElementById('rUser').value).set(document.getElementById('rPass').value).then(()=>toggleAuth('log')); }
+        function logout() { localStorage.clear(); location.reload(); }
+
+        // --- Data Handling ---
+        function loadItems() {
+            db.ref('items').on('value', s => {
+                allItems = [];
+                s.forEach(c => allItems.push({id: c.key, ...c.val()}));
+                renderItems();
+            });
+        }
+
+        function renderItems() {
+            let search = document.getElementById('searchInp').value.toLowerCase();
+            let filtered = allItems.filter(i => (curCat === "All" || i.cat === curCat) && i.title.toLowerCase().includes(search));
+            
+            // SORTING: Newest first based on Time
+            filtered.sort((a,b) => (b.pin - a.pin) || (b.time - a.time));
+
+            document.getElementById('grid').innerHTML = filtered.map(i => `
+                <div class="item-card" onclick="viewPost('${i.id}')">
+                    ${i.pin ? '<div class="pin-tag">PINNED</div>' : ''}
+                    <img src="${i.img}" loading="lazy">
+                    <div class="item-info">
+                        <div class="item-name">${i.title}</div>
+                        <div class="item-price">Rs. ${parseInt(i.price).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update My Posts
+            let mine = allItems.filter(i => i.owner === user);
+            document.getElementById('myGrid').innerHTML = mine.map(i => `
+                <div class="item-card">
+                    <img src="${i.img}">
+                    <div class="item-info">
+                        <div>${i.title}</div>
+                        <button onclick="delPost('${i.id}')" style="background:#ff4d4d; color:white; border:none; padding:5px; border-radius:5px; margin-top:5px; width:100%; font-size:11px;">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update Wishlist
+            let wishes = allItems.filter(i => wishList.includes(i.id));
+            document.getElementById('wishGrid').innerHTML = wishes.map(i => `
+                <div class="item-card" onclick="viewPost('${i.id}')">
+                    <img src="${i.img}"><div class="item-info"><div>${i.title}</div></div>
+                </div>
+            `).join('');
+        }
+
+        function viewPost(id) {
+            let i = allItems.find(x => x.id === id);
+            document.getElementById('dContent').innerHTML = `
+                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>${i.title}</h2>
+                    <i class="fa${wishList.includes(id)?'s':'r'} fa-heart" onclick="toggleWish('${id}')" style="font-size:24px; color:${wishList.includes(id)?'red':'white'};"></i>
+                </div>
+                <h3 style="color:var(--primary); margin:10px 0;">Rs. ${parseInt(i.price).toLocaleString()}</h3>
+                <p style="color:gray; line-height:1.6;">${i.desc}</p><br>
+                <button class="btn-gold" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/94${i.wa}')">Chat via WhatsApp</button>
+                ${user === 'aureum' ? `<button class="btn-gold" style="margin-top:10px;" onclick="pinAd('${id}')">Pin Ad</button>` : ''}
+            `;
+            toggleOverlay('detailOverlay', true);
+        }
+
+        async function publish() {
+            let file = document.getElementById('fIn').files[0]; if(!file) return;
+            let btn = document.getElementById('pBtn'); btn.innerText = "Publishing..."; btn.disabled = true;
+            
+            let fd = new FormData(); fd.append("image", file);
+            let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB, { method: "POST", body: fd });
+            let d = await res.json();
+
+            if(d.success) {
+                db.ref('items').push({
+                    title: document.getElementById('pTitle').value,
+                    price: document.getElementById('pPrice').value,
+                    cat: document.getElementById('pCatInp').value,
+                    desc: document.getElementById('pDesc').value,
+                    wa: document.getElementById('pWA').value,
+                    img: d.data.url, owner: user, time: Date.now(), pin: false
+                }).then(() => location.reload());
+            }
+        }
+
+        // --- Functions ---
+        function loadCats() {
+            db.ref('cats').on('value', s => {
+                let list = ["All"]; if(s.exists()) s.forEach(c => list.push(c.val()));
+                document.getElementById('catBar').innerHTML = list.map(c => `<div class="cat-chip ${curCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
+                document.getElementById('pCatInp').innerHTML = list.filter(x=>x!=="All").map(c => `<option>${c}</option>`).join('');
+                if(user === 'aureum') {
+                    let html = ''; s.forEach(c => html += `<div style="display:flex; justify-content:space-between; padding:10px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:10px;">${c.val()} <i class="fas fa-trash" onclick="db.ref('cats/${c.key}').remove()"></i></div>`);
+                    document.getElementById('admCatList').innerHTML = html;
+                }
+            });
+        }
+        function setCat(c) { curCat = c; loadCats(); renderItems(); }
+        function addCat() { let v = document.getElementById('nCatInp').value; if(v) db.ref('cats').push(v); document.getElementById('nCatInp').value=""; }
+        
+        function loadSupport() {
+            db.ref('support').on('value', s => {
+                let n = s.val() || "000000000";
+                document.getElementById('supNumDisp').innerText = "+94 " + n;
+                document.getElementById('supWA').onclick = () => window.open('https://wa.me/94' + n);
+            });
+        }
+        function setSupport() { let n = document.getElementById('supInp').value; if(n) db.ref('support').set(n).then(()=>alert("Support Number Updated!")); }
+
+        function delPost(id) { if(confirm("Delete this?")) db.ref('items/'+id).remove(); }
+        function pinAd(id) { let i = allItems.find(x=>x.id===id); db.ref('items/'+id).update({pin: !i.pin}); toggleOverlay('detailOverlay', false); }
+        function toggleWish(id) { if(wishList.includes(id)) wishList = wishList.filter(x=>x!==id); else wishList.push(id); localStorage.setItem('wishlist', JSON.stringify(wishList)); renderItems(); toggleOverlay('detailOverlay', false); }
+
+        function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
+        function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
+        function openPostModal() { document.getElementById('sellModal').style.display='flex'; toggleMenu(false); }
+    </script>
 </body>
 </html>
