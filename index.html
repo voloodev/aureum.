@@ -17,23 +17,18 @@
             --glass: rgba(20, 20, 22, 0.85); --blur: blur(25px);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; }
 
+        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-weight: 700; color: var(--primary); font-size: 24px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
-        .search-container { display: flex; align-items: center; background: rgba(255,255,255,0.07); border-radius: 12px; padding: 8px 15px; width: 45%; border: 1px solid rgba(255,255,255,0.1); }
-        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; padding-left: 10px; font-size: 14px; }
-
-        .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
-        .cat-btn { padding: 8px 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
-        .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
-
-        .market-container { padding: 10px 5% 50px 5%; }
+        .logo { font-weight: 700; color: var(--primary); font-size: 24px; text-transform: uppercase; cursor: pointer; }
+        
+        /* Grid System */
+        .market-container { padding: 20px 5%; }
         .masonry-grid { 
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            align-items: start;
         }
         @media (min-width: 768px) { .masonry-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px) { .masonry-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -45,21 +40,17 @@
             border: 1px solid rgba(255,255,255,0.05); 
             cursor: pointer; 
             transition: 0.3s;
-            position: relative;
-            animation: fadeIn 0.5s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .pin-card:hover { border-color: var(--primary); transform: translateY(-3px); }
-        .pin-card img { width: 100%; height: auto; display: block; object-fit: cover; background: #222; min-height: 100px; }
+        .pin-card img { width: 100%; height: auto; display: block; background: #222; min-height: 150px; }
         
-        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 9px; z-index: 2; }
-
+        /* Overlays */
         .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92vh; background: var(--bg-dark); z-index: 3000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; overflow-y: auto; border-radius: 25px 25px 0 0; border-top: 1px solid #333; }
         .slide-overlay.active { bottom: 0; }
         .exit-btn { float: right; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        
+        /* Inputs & Buttons */
         .auth-input, select, textarea { width: 100%; background: #161618; border: 1px solid #222; color: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; outline: none; }
-        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
         
         #sideMenu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 4000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.05); }
         #sideMenu.active { right: 0; }
@@ -82,15 +73,9 @@
 
     <nav>
         <div class="logo" onclick="location.reload()">AUREUM</div>
-        <div class="search-container">
-            <i class="fas fa-search" style="color:#555;"></i>
-            <input type="text" id="searchInput" placeholder="Search..." oninput="renderGrid()">
-        </div>
         <div onclick="toggleMenu(true)" style="cursor:pointer;"><i class="fas fa-bars-staggered fa-lg"></i></div>
     </nav>
 
-    <div class="cat-scroll" id="catBar"></div>
-    
     <div class="market-container">
         <div class="masonry-grid" id="marketGrid"></div>
     </div>
@@ -100,8 +85,7 @@
         <div style="margin-top:50px;">
             <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uDisp"></span></div>
             <div class="menu-item" onclick="openModal('sellModal')"><i class="fas fa-plus-square"></i> Sell Item</div>
-            <div class="menu-item" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-layer-group"></i> My Posts</div>
-            <div id="admTools" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminPanel', true)"><i class="fas fa-user-shield"></i> Admin Panel</div>
+            <div class="menu-item" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-list"></i> My Posts</div>
             <div class="menu-item" onclick="logout()" style="margin-top:20px; color:#ff453a;"><i class="fas fa-power-off"></i> Logout</div>
         </div>
     </div>
@@ -115,15 +99,14 @@
     <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:5000; align-items:center; justify-content:center; padding:20px;">
         <div style="width:100%; max-width:400px; max-height:90vh; overflow-y:auto; background:var(--surface); padding:25px; border-radius:20px;">
             <i class="fas fa-times exit-btn" onclick="closeModal('sellModal')"></i>
-            <h3 id="modalTitle" style="margin-bottom:20px; color: var(--primary);">Publish Item</h3>
+            <h3 id="modalTitle" style="margin-bottom:20px; color: var(--primary);">New Listing</h3>
             <input type="hidden" id="editId">
-            <div id="fileArea"><input type="file" id="fileIn" class="auth-input"></div>
+            <input type="file" id="fileIn" class="auth-input">
             <input type="text" id="pName" class="auth-input" placeholder="Title">
             <input type="number" id="pPrice" class="auth-input" placeholder="Price">
-            <select id="pCat" class="auth-input"></select>
             <textarea id="pDesc" class="auth-input" placeholder="Description"></textarea>
             <input type="text" id="pWA" class="auth-input" placeholder="WhatsApp Number">
-            <button class="btn-gold" id="pubBtn" onclick="publish()">Submit Now</button>
+            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish</button>
         </div>
     </div>
 
@@ -133,11 +116,10 @@
             <img id="dImg" style="width:100%; border-radius:15px;">
             <h2 id="dTitle" style="margin-top:20px;"></h2>
             <h3 id="dPrice" style="color:var(--primary); margin:10px 0;"></h3>
-            <p id="dDesc" style="color:var(--text-muted); line-height: 1.6;"></p><br>
-            <button id="dWA" class="btn-gold" style="background:#25D366; color:white;">WhatsApp Seller</button>
-            
-            <div id="adminActions" style="display:none; margin-top:20px; border-top:1px solid #333; padding-top:20px;">
-                <button class="btn-gold" onclick="adminDelete()" style="background:#ff453a; color:white;">ADMIN: Delete Post</button>
+            <p id="dDesc" style="color:var(--text-muted);"></p><br>
+            <button id="dWA" class="btn-gold" style="background:#25D366; color:white;">WhatsApp</button>
+            <div id="adminArea" style="display:none; margin-top:20px;">
+                <button class="btn-gold" onclick="deletePost(activeId)" style="background:#ff453a; color:white;">Delete Post</button>
             </div>
         </div>
     </div>
@@ -158,15 +140,13 @@
 
         let user = localStorage.getItem('user');
         let allItems = [];
-        let currentCat = 'All';
-        let activePostId = null;
+        let activeId = null;
 
-        window.onload = () => { if(user) startApp(); loadCats(); loadItems(); };
+        window.onload = () => { if(user) startApp(); loadItems(); };
 
         function startApp() {
             document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('uDisp').innerText = user;
-            if(user === 'aureum') document.getElementById('admTools').style.display = 'flex';
         }
 
         function login() {
@@ -176,40 +156,48 @@
         }
 
         function loadItems() {
-            // Realtime update setting
             db.ref('items').on('value', s => {
                 allItems = [];
                 s.forEach(c => {
                     let item = c.val();
                     item.id = c.key;
-                    // පෝස්ට් එකේ පින්තූරයක් තියෙනවා නම් විතරක් add කරන්න
-                    if(item.img) allItems.push(item);
+                    allItems.push(item);
                 });
                 renderGrid();
                 renderMyPosts();
-            }, e => console.error(e));
+            });
         }
 
         function renderGrid() {
             const grid = document.getElementById('marketGrid');
-            let term = document.getElementById('searchInput').value.toLowerCase();
-            
-            let filtered = allItems.filter(i => (currentCat==='All' || i.cat===currentCat) && i.name.toLowerCase().includes(term));
-            
-            // Sort: Newest First
-            filtered.sort((a,b) => (b.time || 0) - (a.time || 0));
+            // Sort: Newest First (safety: if no time, put it at end)
+            let sorted = [...allItems].sort((a,b) => (b.time || 0) - (a.time || 0));
 
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; color:#555;">No products found in this category.</div>`;
+            if(sorted.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; padding:50px;">No items found.</p>`;
                 return;
             }
 
-            grid.innerHTML = filtered.map(i => `
+            grid.innerHTML = sorted.map(i => `
                 <div class="pin-card" onclick="openPost('${i.id}')">
-                    <img src="${i.img}" loading="lazy">
+                    <img src="${i.img || 'https://via.placeholder.com/150'}">
                     <div style="padding:12px;">
-                        <div style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${i.name}</div>
-                        <div style="color:var(--primary); font-weight:700; font-size:14px; margin-top:4px;">Rs. ${parseInt(i.price).toLocaleString()}</div>
+                        <div style="font-weight:600; font-size:13px;">${i.name || 'Untitled'}</div>
+                        <div style="color:var(--primary); font-weight:700; margin-top:5px;">Rs. ${i.price || '0'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMyPosts() {
+            let mine = allItems.filter(i => i.seller === user);
+            document.getElementById('myListingsGrid').innerHTML = mine.map(i => `
+                <div class="pin-card">
+                    <img src="${i.img}">
+                    <div style="padding:10px;">
+                        <div style="font-size:12px; margin-bottom:8px;">${i.name}</div>
+                        <button onclick="editItem('${i.id}')" style="width:100%; padding:5px; background:#333; color:white; border:none; border-radius:5px; margin-bottom:5px;">Edit</button>
+                        <button onclick="deletePost('${i.id}')" style="width:100%; padding:5px; background:#ff453a; color:white; border:none; border-radius:5px;">Delete</button>
                     </div>
                 </div>
             `).join('');
@@ -219,98 +207,58 @@
             let editId = document.getElementById('editId').value;
             let file = document.getElementById('fileIn').files[0];
             let btn = document.getElementById('pubBtn');
-            
-            if(!editId && !file) return alert("Please select an image");
-            
-            btn.disabled = true; btn.innerText = "Uploading...";
+            btn.disabled = true; btn.innerText = "Processing...";
 
             let data = {
                 name: document.getElementById('pName').value,
                 price: document.getElementById('pPrice').value,
-                cat: document.getElementById('pCat').value,
                 desc: document.getElementById('pDesc').value,
                 wa: document.getElementById('pWA').value,
                 seller: user,
                 time: Date.now()
             };
 
-            try {
-                if (file) {
-                    let fd = new FormData(); fd.append("image", file);
-                    let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, { method: "POST", body: fd });
-                    let d = await res.json();
-                    if (d.success) data.img = d.data.url;
-                }
-
-                if (editId) {
-                    await db.ref('items/'+editId).update(data);
-                    alert("Updated Successfully!");
-                } else {
-                    await db.ref('items').push(data);
-                    alert("Published Successfully!");
-                }
-                closeModal('sellModal');
-                // Page එක refresh කරන්නේ නැතුව දත්ත Update වෙන්න දීම (loadItems handle කරගනී)
-            } catch (e) {
-                alert("Error: " + e.message);
-            } finally {
-                btn.disabled = false; btn.innerText = "Submit Now";
+            if (file) {
+                let fd = new FormData(); fd.append("image", file);
+                let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, { method: "POST", body: fd });
+                let d = await res.json();
+                if (d.success) data.img = d.data.url;
             }
-        }
 
-        function renderMyPosts() {
-            let mine = allItems.filter(i => i.seller === user);
-            document.getElementById('myListingsGrid').innerHTML = mine.map(i => `
-                <div class="pin-card">
-                    <img src="${i.img}">
-                    <div style="padding:10px;">
-                        <div style="font-weight:600; font-size:12px; margin-bottom:8px;">${i.name}</div>
-                        <div style="display:flex; gap:5px;">
-                            <button onclick="editItem('${i.id}')" style="flex:1; padding:7px; background:#333; color:white; border:none; border-radius:6px; font-size:11px;">Edit</button>
-                            <button onclick="deletePost('${i.id}')" style="flex:1; padding:7px; background:#ff453a; color:white; border:none; border-radius:6px; font-size:11px;">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            if (editId) {
+                await db.ref('items/'+editId).update(data);
+            } else {
+                await db.ref('items').push(data);
+            }
+            closeModal('sellModal');
+            btn.disabled = false; btn.innerText = "Publish";
         }
 
         function openPost(id) {
-            activePostId = id;
+            activeId = id;
             let i = allItems.find(x=>x.id===id);
-            if(!i) return;
             document.getElementById('dImg').src = i.img;
             document.getElementById('dTitle').innerText = i.name;
-            document.getElementById('dPrice').innerText = "Rs. " + parseInt(i.price).toLocaleString();
+            document.getElementById('dPrice').innerText = "Rs. " + i.price;
             document.getElementById('dDesc').innerText = i.desc;
             document.getElementById('dWA').onclick = () => window.open(`https://wa.me/${i.wa}`);
-            document.getElementById('adminActions').style.display = (user === 'aureum') ? 'block' : 'none';
+            document.getElementById('adminArea').style.display = (user === 'aureum') ? 'block' : 'none';
             toggleOverlay('detailOverlay', true);
         }
 
-        function deletePost(id) { if(confirm("Delete this listing?")) db.ref('items/'+id).remove(); }
-        function adminDelete() { if(confirm("ADMIN: Delete this?")) { db.ref('items/'+activePostId).remove(); toggleOverlay('detailOverlay', false); } }
-
+        function deletePost(id) { if(confirm("Delete this?")) { db.ref('items/'+id).remove(); toggleOverlay('detailOverlay', false); toggleOverlay('myPostsOverlay', false); } }
+        
         function editItem(id) {
             let i = allItems.find(x=>x.id===id);
             document.getElementById('editId').value = id;
             document.getElementById('pName').value = i.name;
             document.getElementById('pPrice').value = i.price;
-            document.getElementById('pCat').value = i.cat;
             document.getElementById('pDesc').value = i.desc;
             document.getElementById('pWA').value = i.wa;
-            document.getElementById('modalTitle').innerText = "Edit Listing";
             openModal('sellModal');
             toggleOverlay('myPostsOverlay', false);
         }
 
-        function loadCats() {
-            db.ref('categories').on('value', s => {
-                let cats = ['All']; if(s.exists()) s.forEach(c => cats.push(c.val()));
-                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-btn ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
-                document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option>${c}</option>`).join('');
-            });
-        }
-        function setCat(c) { currentCat = c; renderGrid(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
         function openModal(id) { document.getElementById(id).style.display='flex'; toggleMenu(false); }
