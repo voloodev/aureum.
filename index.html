@@ -13,153 +13,155 @@
     <style>
         :root {
             --primary: #dfbc74; --bg-dark: #0a0a0c;
-            --surface: #121215; --text-main: #ffffff; --text-muted: #a1a1aa;
-            --glass: rgba(20, 20, 22, 0.7); --blur: blur(25px);
+            --surface: rgba(255, 255, 255, 0.05);
+            --glass: rgba(15, 15, 18, 0.7); --blur: blur(20px);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg-dark); color: white; min-height: 100vh; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-weight: 700; color: var(--primary); font-size: 26px; cursor: pointer; text-transform: uppercase; }
-        .search-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 15px; width: 50%; border: 1px solid rgba(255,255,255,0.05); }
-        .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; padding-left: 10px; }
+        /* Navigation with Frosted Glass */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .logo { font-weight: 700; color: var(--primary); font-size: 24px; letter-spacing: 1px; }
+        .search-bar { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 10px 15px; width: 50%; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
 
-        .cat-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
-        .cat-btn { padding: 8px 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
-        .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        /* Filter Categories */
+        .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
+        .cat-bar::-webkit-scrollbar { display: none; }
+        .cat-chip { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .cat-chip.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; }
 
-        /* Real Pinterest Masonry Style */
-        .masonry-grid { 
-            column-count: 2; 
-            column-gap: 15px; 
+        /* Layout - Flexible Grid */
+        .market-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 15px; 
             padding: 10px 5%; 
-            width: 100%; 
         }
-        @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
-        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
-        
-        .pin-card { 
-            break-inside: avoid; 
-            margin-bottom: 15px; 
-            background: var(--surface); 
-            border-radius: 18px; 
-            overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.05); 
-            position: relative; 
-            cursor: pointer; 
-            display: block;
-        }
-        .pin-card img { width: 100%; display: block; height: auto; }
-        .pin-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 9px; z-index: 5; }
+        @media (min-width: 768px) { .market-container { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); } }
 
-        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92vh; background: var(--bg-dark); z-index: 3000; transition: 0.5s; padding: 25px; overflow-y: auto; }
-        .slide-overlay.active { bottom: 0; }
-        .exit-btn { float: right; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        .item-card { background: var(--surface); border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: 0.3s; cursor: pointer; position: relative; }
+        .item-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .item-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .item-info { padding: 12px; }
+        .item-name { font-weight: 600; font-size: 14px; margin-bottom: 5px; }
+        .item-price { color: var(--primary); font-weight: 700; font-size: 13px; }
+        .pin-badge { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; }
 
-        .auth-input, select, textarea { width: 100%; background: #0c0c0e; border: 1px solid #222; color: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; outline: none; }
-        .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        /* Slide Overlays */
+        .overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92vh; background: var(--bg-dark); z-index: 2000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 25px 25px 0 0; }
+        .overlay.active { bottom: 0; }
+        .close-btn { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); }
 
-        #sideMenu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 4000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.05); }
+        /* Side Menu */
+        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 3000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid rgba(255,255,255,0.1); }
         #sideMenu.active { right: 0; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 15px; cursor: pointer; font-weight: 600; color: white; border-radius: 12px; }
-        .menu-item i { color: var(--primary); width: 20px; }
+        .menu-link { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; color: white; text-decoration: none; font-weight: 600; margin-bottom: 5px; cursor: pointer; }
+        .menu-link:hover { background: rgba(255,255,255,0.05); color: var(--primary); }
+        .menu-link i { width: 20px; color: var(--primary); }
 
-        #authOverlay { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .admin-shield-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; color: #111; cursor: pointer; transition: 0.3s; }
-        .admin-shield-btn:hover { color: var(--primary); }
+        /* Forms & Buttons */
+        .input-box { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #222; color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; outline: none; }
+        .btn-main { width: 100%; background: var(--primary); color: #000; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
         
-        .admin-list-item { display: flex; justify-content: space-between; background: #1a1a1e; padding: 12px; border-radius: 10px; margin-bottom: 8px; }
+        #authScreen { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .shield-icon { position: absolute; top: 20px; right: 20px; font-size: 22px; color: #111; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="authOverlay">
-        <div style="width: 100%; max-width: 380px; text-align: center; position: relative;">
-            <i class="fas fa-shield-alt admin-shield-btn" id="shieldBtn" onclick="toggleAdminMode()"></i>
-            <h1 style="color:var(--primary); margin-bottom:30px; letter-spacing: 2px;">AUREUM</h1>
-            <div id="logArea">
-                <input type="text" id="lUser" class="auth-input" placeholder="Username">
-                <input type="password" id="lPass" class="auth-input" placeholder="Password">
-                <button class="btn-gold" onclick="login()">Login</button>
-                <p id="regText" onclick="toggleAuth('reg')" style="margin-top:20px; color:var(--text-muted); cursor:pointer; font-size: 13px;">Create Account</p>
+    <div id="authScreen">
+        <div style="width: 100%; max-width: 350px; text-align: center; position: relative;">
+            <i class="fas fa-shield-alt shield-icon" id="shieldBtn" onclick="toggleAdminMode()"></i>
+            <h1 style="color:var(--primary); margin-bottom:30px;">AUREUM</h1>
+            <div id="logFields">
+                <input type="text" id="lUser" class="input-box" placeholder="Username">
+                <input type="password" id="lPass" class="input-box" placeholder="Password">
+                <button class="btn-main" onclick="login()">Login</button>
+                <p onclick="toggleAuth('reg')" style="margin-top:20px; color:gray; cursor:pointer;">New? Register</p>
             </div>
-            <div id="regArea" style="display:none;">
-                <input type="text" id="rUser" class="auth-input" placeholder="New Username">
-                <input type="password" id="rPass" class="auth-input" placeholder="Password">
-                <button class="btn-gold" onclick="register()">Register</button>
-                <p onclick="toggleAuth('log')" style="margin-top:20px; color:var(--text-muted); cursor:pointer; font-size: 13px;">Back to Login</p>
+            <div id="regFields" style="display:none;">
+                <input type="text" id="rUser" class="input-box" placeholder="New Username">
+                <input type="password" id="rPass" class="input-box" placeholder="Password">
+                <button class="btn-main" onclick="register()">Register Account</button>
+                <p onclick="toggleAuth('log')" style="margin-top:20px; color:gray; cursor:pointer;">Back to Login</p>
             </div>
         </div>
     </div>
 
     <nav>
         <div class="logo">AUREUM</div>
-        <div class="search-container">
-            <i class="fas fa-search" style="color:#444;"></i>
-            <input type="text" id="searchInput" placeholder="Search..." oninput="renderGrid()">
+        <div class="search-bar">
+            <i class="fas fa-search" style="color: #555;"></i>
+            <input type="text" id="searchInp" placeholder="Search products..." oninput="renderItems()">
         </div>
         <div onclick="toggleMenu(true)" style="cursor:pointer;"><i class="fas fa-bars fa-lg"></i></div>
     </nav>
 
-    <div class="cat-scroll" id="catBar"></div>
-    <div class="masonry-grid" id="marketGrid"></div>
+    <div class="cat-bar" id="catBar"></div>
+    <div class="market-container" id="grid"></div>
 
     <div id="sideMenu">
-        <i class="fas fa-times exit-btn" onclick="toggleMenu(false)"></i>
+        <i class="fas fa-times close-btn" onclick="toggleMenu(false)"></i>
         <div style="margin-top:50px;">
-            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uDisp"></span></div>
-            <div class="menu-item" onclick="openModal('sellModal')"><i class="fas fa-plus-square"></i> Sell Item</div>
-            <div class="menu-item" onclick="toggleOverlay('wishOverlay', true)"><i class="fas fa-heart"></i> Wishlist</div>
-            <div id="admBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminPanel', true)"><i class="fas fa-user-shield"></i> Admin Settings</div>
-            <div class="menu-item" onclick="logout()" style="margin-top:20px; color:#ff453a;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div class="menu-link"><i class="fas fa-user-circle"></i> <span id="userName"></span></div>
+            <div class="menu-link" onclick="openPostModal()"><i class="fas fa-plus-circle"></i> Sell Item</div>
+            <div class="menu-link" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-th-list"></i> My Posts</div>
+            <div class="menu-link" onclick="toggleOverlay('wishlistOverlay', true)"><i class="fas fa-heart"></i> Wishlist</div>
+            <div class="menu-link" onclick="toggleOverlay('supportOverlay', true)"><i class="fas fa-headset"></i> Contact Support</div>
+            <div id="adminLink" class="menu-link" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminOverlay', true)"><i class="fas fa-user-shield"></i> Admin Settings</div>
+            <div class="menu-link" onclick="logout()" style="margin-top:30px; color:#ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
     </div>
 
-    <div id="adminPanel" class="slide-overlay">
-        <i class="fas fa-times exit-btn" onclick="toggleOverlay('adminPanel', false)"></i>
-        <h2 style="margin-bottom:25px;">Admin Dashboard</h2>
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <input type="text" id="newCat" class="auth-input" placeholder="New Category" style="margin-bottom:0;">
-            <button class="btn-gold" style="width:100px;" onclick="addCat()">Add</button>
+    <div id="detailOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
+        <div id="detailData" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="myPostsOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('myPostsOverlay', false)"></i>
+        <h2 style="margin-bottom:20px;">My Posts</h2>
+        <div id="myPostsGrid" class="market-container"></div>
+    </div>
+
+    <div id="wishlistOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('wishlistOverlay', false)"></i>
+        <h2 style="margin-bottom:20px;">Wishlist</h2>
+        <div id="wishGrid" class="market-container"></div>
+    </div>
+
+    <div id="supportOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('supportOverlay', false)"></i>
+        <div style="text-align:center; margin-top:50px;">
+            <i class="fas fa-headset" style="font-size:60px; color:var(--primary); margin-bottom:20px;"></i>
+            <h2>Customer Support</h2>
+            <p style="color:gray; margin:10px 0;">If you have any issues, contact us:</p>
+            <h1 style="color:var(--primary);">+94 7X XXX XXXX</h1>
         </div>
-        <div id="admCatList"></div>
     </div>
 
-    <div id="detailOverlay" class="slide-overlay">
-        <i class="fas fa-times exit-btn" onclick="toggleOverlay('detailOverlay', false)"></i>
-        <div id="dContent" style="margin-top:20px;">
-            <img id="dImg" style="width:100%; border-radius:20px;">
-            <div style="display:flex; justify-content:space-between; align-items: center; margin-top:20px;">
-                <h2 id="dTitle"></h2>
-                <div style="display:flex; gap:20px; font-size: 24px;">
-                    <i id="dWishBtn" class="fas fa-heart" onclick="toggleWishlist()" style="cursor:pointer;"></i>
-                    <i id="admPin" class="fas fa-thumbtack" style="display:none; cursor:pointer;" onclick="togglePin()"></i>
-                </div>
-            </div>
-            <h3 id="dPrice" style="color:var(--primary); margin:10px 0;"></h3>
-            <p id="dDesc" style="color:var(--text-muted);"></p><br>
-            <button id="dWA" class="btn-gold" style="background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> Chat Seller</button>
-            <button id="admDel" class="btn-gold" style="display:none; background:#ff453a; color:white; margin-top:10px;" onclick="adminDelete()">Delete Post</button>
+    <div id="adminOverlay" class="overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('adminOverlay', false)"></i>
+        <h2>Admin Dashboard</h2>
+        <div style="display:flex; gap:10px; margin:20px 0;">
+            <input type="text" id="newCatInp" class="input-box" placeholder="Category Name" style="margin:0;">
+            <button class="btn-main" style="width:100px;" onclick="addCategory()">Add</button>
         </div>
+        <div id="adminCatList"></div>
     </div>
 
-    <div id="wishOverlay" class="slide-overlay">
-        <i class="fas fa-times exit-btn" onclick="toggleOverlay('wishOverlay', false)"></i>
-        <h2 style="margin-bottom:20px;">My Wishlist</h2>
-        <div id="wishList" class="masonry-grid"></div>
-    </div>
-
-    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:5000; align-items:center; justify-content:center; padding:20px;">
-        <div style="width:100%; max-width:400px; background:var(--surface); padding:25px; border-radius:20px;">
-            <i class="fas fa-times exit-btn" onclick="closeModal('sellModal')"></i>
-            <h3 style="margin-bottom:20px; color: var(--primary);">Publish Product</h3>
-            <input type="file" id="fileIn" class="auth-input">
-            <input type="text" id="pName" class="auth-input" placeholder="Item Name">
-            <input type="number" id="pPrice" class="auth-input" placeholder="Price">
-            <select id="pCat" class="auth-input"></select>
-            <textarea id="pDesc" class="auth-input" placeholder="Details..."></textarea>
-            <input type="text" id="pWA" class="auth-input" placeholder="WhatsApp (07...)">
-            <button class="btn-gold" id="pubBtn" onclick="publish()">Publish</button>
+    <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center; padding:20px;">
+        <div style="width:100%; max-width:400px; background:#111; padding:25px; border-radius:20px; border:1px solid #222;">
+            <i class="fas fa-times close-btn" onclick="closeModal()"></i>
+            <h3 style="margin-bottom:20px;">New Listing</h3>
+            <input type="file" id="fIn" class="input-box">
+            <input type="text" id="pTitle" class="input-box" placeholder="Product Name">
+            <input type="number" id="pPrice" class="input-box" placeholder="Price (Rs.)">
+            <select id="pCat" class="input-box"></select>
+            <textarea id="pDesc" class="input-box" placeholder="Short Description"></textarea>
+            <input type="text" id="pWa" class="input-box" placeholder="WhatsApp Number">
+            <button class="btn-main" id="pubBtn" onclick="publish()">Post Item</button>
         </div>
     </div>
 
@@ -175,167 +177,156 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const IMGBB_KEY = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
+        const IMGBB = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
 
         let user = localStorage.getItem('user');
-        let isAdminLoginMode = false;
-        let allItems = [];
-        let currentCat = 'All';
-        let currentPostId = null;
-        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        let isAdmin = false;
+        let allData = [];
+        let curCat = "All";
+        let wishList = JSON.parse(localStorage.getItem('wish')) || [];
 
-        window.onload = () => { if(user) startApp(); loadCats(); loadItems(); };
+        window.onload = () => { if(user) init(); loadCats(); loadItems(); };
 
-        function startApp() {
-            document.getElementById('authOverlay').style.display = 'none';
-            document.getElementById('uDisp').innerText = user;
-            if(user === 'aureum') document.getElementById('admBtn').style.display = 'flex';
+        function init() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('userName').innerText = user;
+            if(user === 'aureum') document.getElementById('adminLink').style.display = 'flex';
         }
 
-        // --- Admin Mode Toggle ---
+        // --- Auth ---
         function toggleAdminMode() {
-            isAdminLoginMode = !isAdminLoginMode;
-            document.getElementById('shieldBtn').style.color = isAdminLoginMode ? '#dfbc74' : '#111';
-            document.getElementById('regText').style.display = isAdminLoginMode ? 'none' : 'block';
+            isAdmin = !isAdmin;
+            document.getElementById('shieldBtn').style.color = isAdmin ? '#dfbc74' : '#111';
         }
-
         function login() {
             let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
-            if (isAdminLoginMode) {
-                if(u === 'aureum' && p === '1234') { localStorage.setItem('user', 'aureum'); location.reload(); }
-                else alert("Admin Access Denied");
+            if(isAdmin) {
+                if(u === 'aureum' && p === '1234') { localStorage.setItem('user', u); location.reload(); }
+                else alert("Admin Error");
             } else {
                 db.ref('users/'+u).once('value', s => {
                     if(s.val() === p) { localStorage.setItem('user', u); location.reload(); }
-                    else alert("Wrong Login Details");
+                    else alert("Wrong Login");
                 });
             }
         }
-
         function toggleAuth(m) {
-            document.getElementById('logArea').style.display = m==='log'?'block':'none';
-            document.getElementById('regArea').style.display = m==='reg'?'block':'none';
+            document.getElementById('logFields').style.display = m==='log'?'block':'none';
+            document.getElementById('regFields').style.display = m==='reg'?'block':'none';
         }
         function register() { db.ref('users/'+document.getElementById('rUser').value).set(document.getElementById('rPass').value).then(()=>toggleAuth('log')); }
         function logout() { localStorage.clear(); location.reload(); }
 
-        // --- Market Logic ---
+        // --- Market ---
         function loadItems() {
             db.ref('items').on('value', s => {
-                allItems = [];
-                s.forEach(c => allItems.push({id:c.key, ...c.val()}));
-                renderGrid();
-                renderWishlist();
+                allData = [];
+                s.forEach(child => allData.push({id: child.key, ...child.val()}));
+                renderItems();
             });
         }
 
-        function renderGrid() {
-            let term = document.getElementById('searchInput').value.toLowerCase();
-            let filtered = allItems.filter(i => (currentCat==='All' || i.cat===currentCat) && i.name.toLowerCase().includes(term));
-            
-            // SORTING: Pinned first, then Newest (Time DESC)
-            filtered.sort((a,b) => (b.pinned - a.pinned) || (b.time - a.time));
+        function renderItems() {
+            let search = document.getElementById('searchInp').value.toLowerCase();
+            // Filter and Sort: Pinned first, then Newest (Time Desc)
+            let filtered = allData.filter(i => (curCat === "All" || i.cat === curCat) && i.title.toLowerCase().includes(search));
+            filtered.sort((a,b) => (b.pin - a.pin) || (b.time - a.time));
 
-            document.getElementById('marketGrid').innerHTML = filtered.map(i => `
-                <div class="pin-card" onclick="openPost('${i.id}')">
-                    ${i.pinned ? '<div class="pin-tag"><i class="fas fa-thumbtack"></i> PINNED</div>' : ''}
+            document.getElementById('grid').innerHTML = filtered.map(i => `
+                <div class="item-card" onclick="viewPost('${i.id}')">
+                    ${i.pin ? '<div class="pin-badge">PINNED</div>' : ''}
                     <img src="${i.img}">
-                    <div style="padding:15px;">
-                        <div style="font-weight:700; font-size:14px;">${i.name}</div>
-                        <div style="color:var(--primary); font-weight:700; margin-top:5px;">Rs. ${parseInt(i.price).toLocaleString()}</div>
+                    <div class="item-info">
+                        <div class="item-name">${i.title}</div>
+                        <div class="item-price">Rs. ${parseInt(i.price).toLocaleString()}</div>
                     </div>
+                </div>
+            `).join('');
+            
+            // Render My Posts
+            let mine = allData.filter(i => i.owner === user);
+            document.getElementById('myPostsGrid').innerHTML = mine.map(i => `
+                <div class="item-card">
+                    <img src="${i.img}">
+                    <div class="item-info">
+                        <div class="item-name">${i.title}</div>
+                        <button class="btn-main" style="background:#ff4d4d; padding:5px; font-size:11px;" onclick="deletePost('${i.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Wishlist
+            let wish = allData.filter(i => wishList.includes(i.id));
+            document.getElementById('wishGrid').innerHTML = wish.map(i => `
+                <div class="item-card" onclick="viewPost('${i.id}')">
+                    <img src="${i.img}"><div class="item-info"><div class="item-name">${i.title}</div></div>
                 </div>
             `).join('');
         }
 
-        function openPost(id) {
-            currentPostId = id;
-            let i = allItems.find(x=>x.id===id);
-            document.getElementById('dImg').src = i.img;
-            document.getElementById('dTitle').innerText = i.name;
-            document.getElementById('dPrice').innerText = "Rs. " + parseInt(i.price).toLocaleString();
-            document.getElementById('dDesc').innerText = i.desc;
-            document.getElementById('dWA').onclick = () => window.open(`https://wa.me/${formatWA(i.wa)}`);
-            
-            document.getElementById('admPin').style.display = user==='aureum' ? 'block' : 'none';
-            document.getElementById('admPin').style.color = i.pinned ? 'var(--primary)' : '#333';
-            document.getElementById('admDel').style.display = user==='aureum' ? 'block' : 'none';
-            document.getElementById('dWishBtn').style.color = wishlist.includes(id) ? 'red' : '#333';
-
+        function viewPost(id) {
+            let i = allData.find(x => x.id === id);
+            document.getElementById('detailData').innerHTML = `
+                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between;">
+                    <h2>${i.title}</h2>
+                    <i class="fa${wishList.includes(id)?'s':'r'} fa-heart" style="font-size:24px; color:${wishList.includes(id)?'red':'white'};" onclick="toggleWish('${id}')"></i>
+                </div>
+                <h3 style="color:var(--primary); margin:10px 0;">Rs. ${parseInt(i.price).toLocaleString()}</h3>
+                <p style="color:gray; line-height:1.5;">${i.desc}</p>
+                <div style="margin-top:30px; display:flex; gap:10px;">
+                    <button class="btn-main" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/94${i.wa}')"><i class="fab fa-whatsapp"></i> WhatsApp Seller</button>
+                    ${user === 'aureum' ? `<button class="btn-main" style="width:60px;" onclick="pinPost('${id}')"><i class="fas fa-thumbtack"></i></button>` : ''}
+                </div>
+            `;
             toggleOverlay('detailOverlay', true);
         }
 
-        function formatWA(num) {
-            let n = num.replace(/\D/g, '');
-            if (n.startsWith('0')) n = '94' + n.substring(1);
-            else if (!n.startsWith('94')) n = '94' + n;
-            return n;
-        }
-
-        // --- Admin Functions ---
-        function togglePin() {
-            let i = allItems.find(x=>x.id===currentPostId);
-            db.ref('items/'+currentPostId).update({pinned: !i.pinned});
-            toggleOverlay('detailOverlay', false);
-        }
-
-        function adminDelete() { if(confirm("Delete this?")) { db.ref('items/'+currentPostId).remove(); toggleOverlay('detailOverlay', false); } }
-
-        function loadCats() {
-            db.ref('categories').on('value', s => {
-                let cats = ['All'];
-                let admHtml = '';
-                if(s.exists()){
-                    s.forEach(c => {
-                        cats.push(c.val());
-                        admHtml += `<div class="admin-list-item"><span>${c.val()}</span><i class="fas fa-trash" onclick="delCat('${c.key}')"></i></div>`;
-                    });
-                }
-                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-btn ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
-                document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option>${c}</option>`).join('');
-                document.getElementById('admCatList').innerHTML = admHtml;
-            });
-        }
-        function setCat(c) { currentCat = c; loadCats(); renderGrid(); }
-        function addCat() { let v = document.getElementById('newCat').value; if(v) db.ref('categories').push(v); document.getElementById('newCat').value=""; }
-        function delCat(k) { if(confirm("Delete Category?")) db.ref('categories/'+k).remove(); }
-
-        // --- Helpers ---
+        // --- Post Logic ---
         async function publish() {
-            let file = document.getElementById('fileIn').files[0];
-            let btn = document.getElementById('pubBtn'); btn.disabled = true;
-            let fd = new FormData(); fd.append("image", file);
-            let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, { method: "POST", body: fd });
+            let f = document.getElementById('fIn').files[0];
+            if(!f) return alert("Select Image");
+            let btn = document.getElementById('pubBtn'); btn.innerText = "Uploading..."; btn.disabled = true;
+            
+            let fd = new FormData(); fd.append("image", f);
+            let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB, { method: "POST", body: fd });
             let d = await res.json();
-            if (d.success) {
+            
+            if(d.success) {
                 db.ref('items').push({
-                    name: document.getElementById('pName').value,
+                    title: document.getElementById('pTitle').value,
                     price: document.getElementById('pPrice').value,
                     cat: document.getElementById('pCat').value,
                     desc: document.getElementById('pDesc').value,
-                    wa: document.getElementById('pWA').value,
-                    img: d.data.url, seller: user, time: Date.now(), pinned: false
-                }).then(()=>location.reload());
+                    wa: document.getElementById('pWa').value,
+                    img: d.data.url, owner: user, time: Date.now(), pin: false
+                }).then(() => location.reload());
             }
         }
 
-        function toggleWishlist() {
-            if(wishlist.includes(currentPostId)) wishlist = wishlist.filter(id => id !== currentPostId);
-            else wishlist.push(currentPostId);
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-            document.getElementById('dWishBtn').style.color = wishlist.includes(currentPostId) ? 'red' : '#333';
-            renderWishlist();
+        // --- Tools ---
+        function loadCats() {
+            db.ref('cats').on('value', s => {
+                let list = ["All"]; if(s.exists()) s.forEach(c => list.push(c.val().name));
+                document.getElementById('catBar').innerHTML = list.map(c => `<div class="cat-chip ${curCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
+                document.getElementById('pCat').innerHTML = list.filter(x=>x!=="All").map(c => `<option>${c}</option>`).join('');
+                if(user === 'aureum') {
+                    let html = ''; s.forEach(c => html += `<div style="display:flex; justify-content:space-between; padding:10px; background:#111; margin-bottom:5px; border-radius:10px;">${c.val().name} <i class="fas fa-trash" onclick="db.ref('cats/${c.key}').remove()"></i></div>`);
+                    document.getElementById('adminCatList').innerHTML = html;
+                }
+            });
         }
-
-        function renderWishlist() {
-            let list = allItems.filter(i => wishlist.includes(i.id));
-            document.getElementById('wishList').innerHTML = list.map(i => `<div class="pin-card" onclick="openPost('${i.id}')"><img src="${i.img}"><div style="padding:10px;">${i.name}</div></div>`).join('');
-        }
+        function setCat(c) { curCat = c; loadCats(); renderItems(); }
+        function addCategory() { let v = document.getElementById('newCatInp').value; if(v) db.ref('cats').push({name: v}); document.getElementById('newCatInp').value = ""; }
+        
+        function deletePost(id) { if(confirm("Delete this post?")) db.ref('items/'+id).remove(); }
+        function pinPost(id) { let i = allData.find(x=>x.id===id); db.ref('items/'+id).update({pin: !i.pin}); toggleOverlay('detailOverlay', false); }
+        function toggleWish(id) { if(wishList.includes(id)) wishList = wishList.filter(x=>x!==id); else wishList.push(id); localStorage.setItem('wish', JSON.stringify(wishList)); renderItems(); toggleOverlay('detailOverlay', false); }
 
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
-        function openModal(id) { document.getElementById(id).style.display='flex'; toggleMenu(false); }
-        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function openPostModal() { document.getElementById('sellModal').style.display='flex'; toggleMenu(false); }
+        function closeModal() { document.getElementById('sellModal').style.display='none'; }
     </script>
 </body>
 </html>
