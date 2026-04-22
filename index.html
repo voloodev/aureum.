@@ -18,74 +18,62 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg-dark); color: white; min-height: 100vh; overflow-x: hidden; }
 
-        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .logo { font-weight: 700; color: var(--primary); font-size: 22px; letter-spacing: 1px; }
+        .logo { font-weight: 700; color: var(--primary); font-size: 22px; }
+
         .search-bar { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 8px 15px; width: 45%; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 13px; }
 
-        /* Filter Section */
+        /* Categories */
         .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding: 15px 5%; scrollbar-width: none; }
-        .cat-bar::-webkit-scrollbar { display: none; }
-        .cat-chip { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
-        .cat-chip.active { background: var(--primary); color: #000; border-color: var(--primary); font-weight: 700; }
+        .cat-chip { padding: 8px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+        .cat-chip.active { background: var(--primary); color: #000; font-weight: 700; }
 
-        /* Final Grid Fix: Pinterest Style No Overlap */
+        /* Grid Logic - No Spacing Issues */
         .market-grid { 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             padding: 10px 5%;
         }
-        @media (min-width: 768px) { .market-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+        @media (min-width: 768px) { .market-grid { grid-template-columns: repeat(4, 1fr); } }
 
         .card { 
-            background: rgba(255,255,255,0.03); border-radius: 15px; 
-            border: 1px solid rgba(255,255,255,0.05); overflow: hidden;
-            position: relative; cursor: pointer; transition: 0.2s;
+            background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); 
+            overflow: hidden; cursor: pointer; transition: 0.3s;
         }
-        .card:active { transform: scale(0.97); }
-        .card .img-wrap { width: 100%; aspect-ratio: 1/1; background: #111; overflow: hidden; }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .card-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-price { color: var(--primary); font-weight: 700; font-size: 12px; }
+        .img-box { width: 100%; aspect-ratio: 1/1; background: #111; position: relative; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { padding: 12px; }
+        .card-title { font-weight: 600; font-size: 13px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-price { color: var(--primary); font-weight: 700; font-size: 14px; }
         .pin-tag { position: absolute; top: 8px; right: 8px; background: var(--primary); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; }
 
-        /* Overlays & Side Menu */
-        .overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 93vh; background: var(--bg-dark); z-index: 2500; transition: 0.4s cubic-bezier(0, 0.5, 0.5, 1); padding: 20px; overflow-y: auto; border-radius: 20px 20px 0 0; border-top: 1px solid #333; }
+        /* Overlay */
+        .overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 93vh; background: var(--bg-dark); z-index: 2500; transition: 0.4s; padding: 20px; overflow-y: auto; border-radius: 20px 20px 0 0; border-top: 1px solid #333; }
         .overlay.active { bottom: 0; }
         #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 3000; transition: 0.3s; padding: 40px 20px; border-left: 1px solid #222; }
         #sideMenu.active { right: 0; }
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 10px; color: white; font-weight: 600; margin-bottom: 5px; cursor: pointer; }
-        .menu-item i { width: 20px; color: var(--primary); }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: 10px; color: white; cursor: pointer; }
+        .menu-item i { color: var(--primary); }
 
-        /* UI elements */
+        /* UI */
         .input-box { width: 100%; background: #111; border: 1px solid #222; color: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; }
         .btn-gold { width: 100%; background: var(--primary); color: #000; padding: 14px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .close-btn { float: right; font-size: 22px; cursor: pointer; }
 
-        #authScreen { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        #authOverlay { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="authScreen">
-        <div style="width: 100%; max-width: 350px; text-align: center;">
-            <i class="fas fa-shield-alt" id="admIcon" onclick="toggleAdm()" style="cursor:pointer; color:#111; font-size: 20px; margin-bottom: 20px;"></i>
-            <h1 style="color:var(--primary); margin-bottom:20px;">AUREUM</h1>
-            <div id="logIn">
-                <input type="text" id="lU" class="input-box" placeholder="Username">
-                <input type="password" id="lP" class="input-box" placeholder="Password">
-                <button class="btn-gold" onclick="doLogin()">Login</button>
-                <p onclick="toggleAuth('reg')" style="margin-top:20px; color:gray; cursor:pointer; font-size:12px;">Create Account</p>
-            </div>
-            <div id="regIn" style="display:none;">
-                <input type="text" id="rU" class="input-box" placeholder="Username">
-                <input type="password" id="rP" class="input-box" placeholder="Password">
-                <button class="btn-gold" onclick="doRegister()">Register</button>
-                <p onclick="toggleAuth('log')" style="margin-top:20px; color:gray; cursor:pointer; font-size:12px;">Back to Login</p>
-            </div>
+    <div id="authOverlay">
+        <div style="width: 100%; max-width: 320px; text-align: center;">
+            <i class="fas fa-shield-alt" id="admIcon" onclick="isAdmMode=!isAdmMode; this.style.color=isAdmMode?'#dfbc74':'#111'" style="cursor:pointer; color:#111; font-size: 20px;"></i>
+            <h1 style="color:var(--primary); margin: 20px 0;">AUREUM</h1>
+            <input type="text" id="userInp" class="input-box" placeholder="Username">
+            <input type="password" id="passInp" class="input-box" placeholder="Password">
+            <button class="btn-gold" onclick="login()">Login</button>
+            <p onclick="register()" style="color:gray; font-size:12px; margin-top:15px; cursor:pointer;">Register Account</p>
         </div>
     </div>
 
@@ -93,77 +81,77 @@
         <div class="logo">AUREUM</div>
         <div class="search-bar">
             <i class="fas fa-search" style="color:#444;"></i>
-            <input type="text" id="sInp" placeholder="Search items..." oninput="renderApp()">
+            <input type="text" id="sSearch" placeholder="Search..." oninput="render()">
         </div>
-        <div onclick="toggleMenu(true)"><i class="fas fa-bars fa-lg"></i></div>
+        <div onclick="toggleMenu(true)"><i class="fas fa-bars"></i></div>
     </nav>
 
-    <div class="cat-bar" id="cBar"></div>
-    <div class="market-grid" id="mGrid"></div>
+    <div class="cat-bar" id="catBar"></div>
+    <div class="market-grid" id="mainGrid"></div>
 
     <div id="sideMenu">
-        <i class="fas fa-times close-btn" onclick="toggleMenu(false)"></i>
+        <i class="fas fa-times" onclick="toggleMenu(false)" style="float:right; cursor:pointer;"></i>
         <div style="margin-top:50px;">
-            <div class="menu-item"><i class="fas fa-user-circle"></i> <span id="uDisp"></span></div>
-            <div class="menu-item" onclick="openSell()"><i class="fas fa-plus-circle"></i> Sell New Item</div>
+            <div class="menu-item"><i class="fas fa-user"></i> <span id="uName"></span></div>
+            <div class="menu-item" onclick="openPost()"><i class="fas fa-plus"></i> Sell Item</div>
             <div class="menu-item" onclick="toggleOverlay('myOverlay', true)"><i class="fas fa-list"></i> My Posts</div>
             <div class="menu-item" onclick="toggleOverlay('supOverlay', true)"><i class="fas fa-headset"></i> Support</div>
-            <div id="admLink" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('admOverlay', true)"><i class="fas fa-tools"></i> Admin Dashboard</div>
-            <div class="menu-item" onclick="logout()" style="margin-top:30px; color:#ff4d4d;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div id="admBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('admOverlay', true)"><i class="fas fa-tools"></i> Admin</div>
+            <div class="menu-item" onclick="localStorage.clear(); location.reload()" style="color:red;"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
     </div>
 
     <div id="detOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('detOverlay', false)"></i>
-        <div id="detBody" style="margin-top:20px;"></div>
+        <i class="fas fa-times" onclick="toggleOverlay('detOverlay', false)" style="float:right;"></i>
+        <div id="detBody"></div>
     </div>
 
     <div id="myOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('myOverlay', false)"></i>
-        <h2 style="margin-bottom:15px;">My Ads</h2>
+        <i class="fas fa-times" onclick="toggleOverlay('myOverlay', false)" style="float:right;"></i>
+        <h2>My Ads</h2><br>
         <div id="myGrid" class="market-grid"></div>
     </div>
 
     <div id="supOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('supOverlay', false)"></i>
-        <div style="text-align:center; margin-top:60px;">
-            <i class="fas fa-headset" style="font-size:60px; color:var(--primary);"></i>
-            <h2 id="supNameDisp" style="margin-top:15px;">Aureum Support</h2>
-            <h1 id="supNumDisp" style="color:var(--primary); margin:10px 0;"></h1>
-            <button class="btn-gold" style="background:#25D366; color:white;" id="supWA">Chat via WhatsApp</button>
+        <i class="fas fa-times" onclick="toggleOverlay('supOverlay', false)" style="float:right;"></i>
+        <div style="text-align:center; margin-top:50px;">
+            <i class="fas fa-headset" style="font-size:50px; color:var(--primary);"></i>
+            <h2 id="sNameDisp" style="margin-top:15px;">Support</h2>
+            <h1 id="sNumDisp" style="color:var(--primary); margin:10px 0;"></h1>
+            <button class="btn-gold" style="background:#25D366; color:white;" id="waBtn">WhatsApp Us</button>
         </div>
     </div>
 
     <div id="admOverlay" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleOverlay('admOverlay', false)"></i>
+        <i class="fas fa-times" onclick="toggleOverlay('admOverlay', false)" style="float:right;"></i>
         <h2>Admin Settings</h2><br>
-        <div style="background:#111; padding:20px; border-radius:15px; margin-bottom:15px;">
-            <h4>Unlimited Categories</h4><br>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="nC" class="input-box" placeholder="Category Name" style="margin:0;">
+        <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:15px;">
+            <h4>Categories</h4>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <input type="text" id="newC" class="input-box" style="margin:0;" placeholder="Name">
                 <button class="btn-gold" style="width:80px;" onclick="addC()">Add</button>
             </div>
             <div id="admCList" style="margin-top:10px;"></div>
         </div>
-        <div style="background:#111; padding:20px; border-radius:15px;">
-            <h4>Support Configuration</h4><br>
-            <input type="text" id="admSupN" class="input-box" placeholder="Support Name">
-            <input type="text" id="admSupM" class="input-box" placeholder="WhatsApp Number">
-            <button class="btn-gold" onclick="updateSup()">Save Info</button>
+        <div style="background:#111; padding:15px; border-radius:12px;">
+            <h4>Support Info</h4>
+            <input type="text" id="aSName" class="input-box" placeholder="Name">
+            <input type="text" id="aSNum" class="input-box" placeholder="WhatsApp">
+            <button class="btn-gold" onclick="saveS()">Save Info</button>
         </div>
     </div>
 
     <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:4000; align-items:center; justify-content:center; padding:20px;">
-        <div style="width:100%; max-width:400px; background:#0a0a0c; padding:25px; border-radius:20px; border: 1px solid #222;">
-            <i class="fas fa-times close-btn" onclick="document.getElementById('sellModal').style.display='none'"></i>
-            <h3 style="margin-bottom:20px; color:var(--primary);">Publish Advertisement</h3>
-            <input type="file" id="fi" class="input-box">
-            <input type="text" id="ti" class="input-box" placeholder="Product Title">
-            <input type="number" id="pr" class="input-box" placeholder="Price (LKR)">
-            <select id="ca" class="input-box"></select>
-            <textarea id="de" class="input-box" placeholder="Item details..."></textarea>
-            <input type="text" id="wa" class="input-box" placeholder="WhatsApp (e.g. 712345678)">
-            <button class="btn-gold" id="pub" onclick="doPublish()">Post Now</button>
+        <div style="width:100%; max-width:380px; background:#0a0a0c; padding:25px; border-radius:20px; border:1px solid #222;">
+            <i class="fas fa-times" onclick="document.getElementById('sellModal').style.display='none'" style="float:right; cursor:pointer;"></i>
+            <h3 style="color:var(--primary); margin-bottom:15px;">New Ad</h3>
+            <input type="file" id="fImg" class="input-box">
+            <input type="text" id="fTitle" class="input-box" placeholder="Title">
+            <input type="number" id="fPrice" class="input-box" placeholder="Price">
+            <select id="fCat" class="input-box"></select>
+            <textarea id="fDesc" class="input-box" placeholder="Description"></textarea>
+            <input type="text" id="fWa" class="input-box" placeholder="WA Number">
+            <button class="btn-gold" id="pBtn" onclick="publish()">Post Now</button>
         </div>
     </div>
 
@@ -179,46 +167,41 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const IB = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
+        const IB_KEY = "7d57cd3d32b4eb8c60d0a0c72f6f1d65";
 
-        let user = localStorage.getItem('user'), isAdm = false, items = [], curC = "All";
+        let user = localStorage.getItem('user'), isAdmMode = false, allItems = [], curC = "All";
 
-        window.onload = () => { if(user) start(); loadC(); loadI(); loadS(); };
+        window.onload = () => { if(user) init(); loadC(); loadI(); loadS(); };
 
-        function start() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('uDisp').innerText = user;
-            if(user === 'aureum') document.getElementById('admLink').style.display = 'flex';
+        function init() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('uName').innerText = user;
+            if(user === 'aureum') document.getElementById('admBtn').style.display = 'flex';
         }
 
-        function toggleAdm() { isAdm = !isAdm; document.getElementById('admIcon').style.color = isAdm ? '#dfbc74' : '#111'; }
-        function doLogin() {
-            let u = document.getElementById('lU').value, p = document.getElementById('lP').value;
-            if(isAdm) { if(u==='aureum' && p==='1234') { localStorage.setItem('user',u); location.reload(); } else alert("Admin Error"); }
-            else { db.ref('users/'+u).once('value', s => { if(s.val()===p){ localStorage.setItem('user',u); location.reload(); } else alert("Error"); }); }
+        function login() {
+            let u = document.getElementById('userInp').value, p = document.getElementById('passInp').value;
+            if(isAdmMode) { if(u==='aureum' && p==='1234') { localStorage.setItem('user',u); location.reload(); } else alert("Error"); }
+            else { db.ref('users/'+u).once('value', s => { if(s.val()===p) { localStorage.setItem('user',u); location.reload(); } else alert("Failed"); }); }
         }
-        function toggleAuth(m) { document.getElementById('logIn').style.display = m==='log'?'block':'none'; document.getElementById('regIn').style.display = m==='reg'?'block':'none'; }
-        function doRegister() { db.ref('users/'+document.getElementById('rU').value).set(document.getElementById('rP').value).then(()=>toggleAuth('log')); }
-        function logout() { localStorage.clear(); location.reload(); }
+        function register() { db.ref('users/'+document.getElementById('userInp').value).set(document.getElementById('passInp').value).then(()=>alert("Success")); }
 
-        // --- Core ---
         function loadI() {
             db.ref('items').on('value', s => {
-                items = [];
-                s.forEach(c => items.push({id: c.key, ...c.val()}));
-                renderApp();
+                allItems = [];
+                s.forEach(c => { allItems.push({id: c.key, ...c.val()}); });
+                render();
             });
         }
 
-        function renderApp() {
-            let s = document.getElementById('sInp').value.toLowerCase();
-            let fil = items.filter(i => (curC === "All" || i.cat === curC) && i.title.toLowerCase().includes(s));
+        function render() {
+            let s = document.getElementById('sSearch').value.toLowerCase();
+            let fil = allItems.filter(i => (curC === "All" || i.cat === curC) && i.title.toLowerCase().includes(s));
             fil.sort((a,b) => (b.pin - a.pin) || (b.time - a.time));
 
-            document.getElementById('mGrid').innerHTML = fil.map(i => `
+            document.getElementById('mainGrid').innerHTML = fil.map(i => `
                 <div class="card" onclick="view('${i.id}')">
-                    ${i.pin ? '<div class="pin-tag">PINNED</div>' : ''}
-                    <div class="img-wrap"><img src="${i.img}"></div>
+                    <div class="img-box">${i.pin?'<div class="pin-tag">PIN</div>':''}<img src="${i.img}"></div>
                     <div class="card-info">
                         <div class="card-title">${i.title}</div>
                         <div class="card-price">LKR ${parseInt(i.price).toLocaleString()}</div>
@@ -226,78 +209,74 @@
                 </div>
             `).join('');
 
-            let mine = items.filter(i => i.owner === user);
+            let mine = allItems.filter(i => i.owner === user);
             document.getElementById('myGrid').innerHTML = mine.map(i => `
-                <div class="card"><div class="img-wrap"><img src="${i.img}"></div><div class="card-info">
+                <div class="card"><div class="img-box"><img src="${i.img}"></div><div class="card-info">
                     <div class="card-title">${i.title}</div>
-                    <button onclick="delPost('${i.id}')" style="width:100%; background:red; color:white; border:none; padding:5px; border-radius:5px; margin-top:5px; font-size:10px;">Delete</button>
+                    <button onclick="del('${i.id}')" style="width:100%; padding:5px; background:red; color:white; border:none; border-radius:5px; font-size:10px;">Delete</button>
                 </div></div>
             `).join('');
         }
 
-        function view(id) {
-            let i = items.find(x => x.id === id);
-            document.getElementById('detBody').innerHTML = `
-                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:15px;">
-                <h2 style="color:var(--primary);">${i.title}</h2>
-                <h3 style="margin:5px 0;">LKR ${parseInt(i.price).toLocaleString()}</h3>
-                <p style="color:gray; font-size:14px; line-height:1.5;">${i.desc}</p><br>
-                <button class="btn-gold" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/94${i.wa}')"><i class="fab fa-whatsapp"></i> Chat Seller</button>
-                ${user === 'aureum' ? `<button class="btn-gold" style="margin-top:10px;" onclick="pinPost('${id}')">Pin/Unpin Ad</button>` : ''}
-            `;
-            toggleOverlay('detOverlay', true);
-        }
-
-        async function doPublish() {
-            let f = document.getElementById('fi').files[0]; if(!f) return alert("Select Image");
-            let b = document.getElementById('pub'); b.innerText = "Uploading..."; b.disabled = true;
+        async function publish() {
+            let f = document.getElementById('fImg').files[0]; if(!f) return;
+            let b = document.getElementById('pBtn'); b.innerText = "Processing..."; b.disabled = true;
             let fd = new FormData(); fd.append("image", f);
-            let res = await fetch("https://api.imgbb.com/1/upload?key="+IB, { method: "POST", body: fd });
+            let res = await fetch("https://api.imgbb.com/1/upload?key="+IB_KEY, { method: "POST", body: fd });
             let d = await res.json();
             if(d.success) {
                 db.ref('items').push({
-                    title: document.getElementById('ti').value,
-                    price: document.getElementById('pr').value,
-                    cat: document.getElementById('ca').value,
-                    desc: document.getElementById('de').value,
-                    wa: document.getElementById('wa').value,
+                    title: document.getElementById('fTitle').value,
+                    price: document.getElementById('fPrice').value,
+                    cat: document.getElementById('fCat').value,
+                    desc: document.getElementById('fDesc').value,
+                    wa: document.getElementById('fWa').value,
                     img: d.data.url, owner: user, time: Date.now(), pin: false
                 }).then(() => location.reload());
-            } else { alert("Upload failed"); b.disabled = false; b.innerText = "Post Now"; }
+            }
         }
-
-        // --- Admin/Support ---
-        function loadS() {
-            db.ref('sup').on('value', s => {
-                let d = s.val() || { name: "Aureum Support", num: "000000000" };
-                document.getElementById('supNameDisp').innerText = d.name;
-                document.getElementById('supNumDisp').innerText = "+94 " + d.num;
-                document.getElementById('supWA').onclick = () => window.open('https://wa.me/94' + d.num);
-                document.getElementById('admSupN').value = d.name; document.getElementById('admSupM').value = d.num;
-            });
-        }
-        function updateSup() { db.ref('sup').set({ name: document.getElementById('admSupN').value, num: document.getElementById('admSupM').value }).then(()=>alert("Saved")); }
 
         function loadC() {
             db.ref('cats').on('value', s => {
-                let l = ["All"]; 
-                if(s.exists()) s.forEach(c => l.push(c.val().name));
-                document.getElementById('cBar').innerHTML = l.map(c => `<div class="cat-chip ${curC===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
-                document.getElementById('ca').innerHTML = l.filter(x=>x!=="All").map(c => `<option>${c}</option>`).join('');
+                let l = ["All"]; if(s.exists()) s.forEach(c => l.push(c.val().name));
+                document.getElementById('catBar').innerHTML = l.map(c => `<div class="cat-chip ${curC===c?'active':''}" onclick="setC('${c}')">${c}</div>`).join('');
+                document.getElementById('fCat').innerHTML = l.filter(x=>x!=="All").map(c => `<option>${c}</option>`).join('');
                 if(user === 'aureum') {
-                    let h = ''; s.forEach(c => h += `<div style="display:flex; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:5px;">${c.val().name} <i class="fas fa-trash" onclick="db.ref('cats/${c.key}').remove()"></i></div>`);
+                    let h = ''; s.forEach(c => h += `<div style="display:flex; justify-content:space-between; padding:10px; background:#1a1a1a; margin-bottom:5px; border-radius:8px;">${c.val().name} <i class="fas fa-trash" onclick="db.ref('cats/${c.key}').remove()"></i></div>`);
                     document.getElementById('admCList').innerHTML = h;
                 }
             });
         }
-        function setCat(c) { curC = c; loadC(); renderApp(); }
-        function addC() { let v = document.getElementById('nC').value; if(v) db.ref('cats').push({name: v}); document.getElementById('nC').value=""; }
-        
-        function delPost(id) { if(confirm("Delete Ad?")) db.ref('items/'+id).remove(); }
-        function pinPost(id) { let i = items.find(x=>x.id===id); db.ref('items/'+id).update({pin: !i.pin}); toggleOverlay('detOverlay', false); }
+        function setC(c) { curC = c; loadC(); render(); }
+        function addC() { let v = document.getElementById('newC').value; if(v) db.ref('cats').push({name: v}); document.getElementById('newC').value=""; }
+
+        function loadS() {
+            db.ref('sup').on('value', s => {
+                let d = s.val() || { name: "Support", num: "00000000" };
+                document.getElementById('sNameDisp').innerText = d.name;
+                document.getElementById('sNumDisp').innerText = "+94 " + d.num;
+                document.getElementById('waBtn').onclick = () => window.open('https://wa.me/94'+d.num);
+                document.getElementById('aSName').value = d.name; document.getElementById('aSNum').value = d.num;
+            });
+        }
+        function saveS() { db.ref('sup').set({ name: document.getElementById('aSName').value, num: document.getElementById('aSNum').value }).then(()=>alert("Saved")); }
+
+        function view(id) {
+            let i = allItems.find(x => x.id === id);
+            document.getElementById('detBody').innerHTML = `
+                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:15px;">
+                <h2>${i.title}</h2><h3 style="color:var(--primary); margin:5px 0;">LKR ${parseInt(i.price).toLocaleString()}</h3>
+                <p style="color:gray; font-size:14px;">${i.desc}</p><br>
+                <button class="btn-gold" style="background:#25D366; color:white;" onclick="window.open('https://wa.me/94${i.wa}')">WhatsApp Seller</button>
+                ${user==='aureum'?'<button class="btn-gold" style="margin-top:10px;" onclick="pin(\''+id+'\')">Pin Ad</button>':''}
+            `;
+            toggleOverlay('detOverlay', true);
+        }
+        function pin(id) { let i = allItems.find(x=>x.id===id); db.ref('items/'+id).update({pin: !i.pin}); toggleOverlay('detOverlay', false); }
+        function del(id) { if(confirm("Delete?")) db.ref('items/'+id).remove(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).classList.toggle('active', s); toggleMenu(false); }
-        function openSell() { document.getElementById('sellModal').style.display='flex'; toggleMenu(false); }
+        function openPost() { document.getElementById('sellModal').style.display='flex'; toggleMenu(false); }
     </script>
 </body>
 </html>
