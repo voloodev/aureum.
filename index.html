@@ -24,8 +24,12 @@
         /* --- Nav & Search --- */
         nav { display: none; justify-content: space-between; align-items: center; padding: 15px 5%; background: var(--glass); backdrop-filter: var(--blur); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; }
         .logo { font-weight: 700; color: var(--primary); letter-spacing: 1px; font-size: 20px; cursor: pointer; }
+        
+        .hamburger { cursor: pointer; background: none; border: none; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .hamburger span { display: block; width: 25px; height: 2px; background: white; border-radius: 2px; }
+
         .search-container { display: flex; align-items: center; background: #1c1c1e; border-radius: 10px; padding: 8px 15px; flex: 1; max-width: 400px; margin: 0 15px; border: 1px solid #333; }
-        .search-container select { background: transparent; color: var(--primary); border: none; outline: none; font-size: 13px; cursor: pointer; }
+        .search-container select { background: transparent; color: var(--primary); border: none; outline: none; font-size: 13px; }
         .search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; padding: 0 10px; font-size: 13px; }
 
         /* --- Auth --- */
@@ -33,39 +37,38 @@
         .auth-box { position: relative; width: 100%; max-width: 380px; background: var(--surface); border-radius: 20px; padding: 40px 30px; text-align: center; }
         .admin-shield { position: absolute; top: 20px; right: 25px; color: var(--text-muted); cursor: pointer; }
         .auth-input { width: 100%; background: #1c1c1e; border: 1px solid #333; color: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; outline: none; }
-        .btn-primary { width: 100%; background: var(--primary); color: #111; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-primary { width: 100%; background: var(--primary); color: #111; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* --- Side Menu (Frosted Glass) --- */
+        /* --- Side Menu --- */
         #sideMenu { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: var(--glass); backdrop-filter: var(--blur); z-index: 2000; transition: right 0.4s ease; padding: 30px 20px; display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.05); }
         #sideMenu.active { right: 0; }
         .menu-item { display: flex; align-items: center; gap: 15px; color: var(--text-main); font-size: 15px; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; margin-bottom: 5px; }
         .menu-item:hover { background: rgba(255,255,255,0.1); color: var(--primary); }
         .logout-box { margin-top: auto; padding: 15px; background: rgba(255, 59, 48, 0.1); border-radius: 12px; text-align: center; color: #ff3b30; cursor: pointer; font-weight: 700; }
 
-        /* --- Pinterest Layout --- */
+        /* --- Grid --- */
         .wrapper { max-width: 1400px; margin: 20px auto; padding: 0 15px; }
         .masonry-grid { column-count: 2; column-gap: 15px; }
         @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
-        .pin-card { break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 16px; overflow: hidden; position: relative; border: 1px solid #333; cursor: pointer; }
+        .pin-card { break-inside: avoid; margin-bottom: 15px; background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid #333; cursor: pointer; position: relative; }
         .pin-card img { width: 100%; display: block; }
         .pin-title { padding: 10px; font-size: 13px; font-weight: 600; }
-        .wish-icon { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); z-index: 10; }
-        .wish-icon.active { color: #ff3b30; }
+        .pinned-tag { position: absolute; top: 10px; left: 10px; background: var(--primary); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; }
 
-        /* --- Slide Up Overlays --- */
-        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 85vh; background: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 3000; transition: bottom 0.4s ease; padding: 30px 20px; overflow-y: auto; border-top: 1px solid var(--primary); }
+        /* --- Overlays --- */
+        .slide-overlay { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90vh; background: #1c1c1e; border-radius: 30px 30px 0 0; z-index: 3000; transition: bottom 0.4s ease; padding: 30px 20px; overflow-y: auto; border-top: 1px solid var(--primary); }
         .slide-overlay.active { bottom: 0; }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+        
+        /* Wishlist Heart on Overlay */
+        .overlay-header { position: relative; width: 100%; }
+        .wish-icon-overlay { position: absolute; top: 10px; right: 10px; font-size: 24px; color: rgba(255,255,255,0.5); cursor: pointer; z-index: 10; }
+        .wish-icon-overlay.active { color: #ff3b30; }
 
         .buy-btn { display: block; text-align: center; background: #25D366; color: #fff; text-decoration: none; padding: 15px; border-radius: 12px; font-weight: 700; margin-bottom: 10px; }
         .cart-btn { width: 100%; background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* Admin & Contact UI */
-        .admin-card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
-        
-        /* Seller Label in Cart */
-        .cart-item { background: #1c1c1e; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #333; }
-        .seller-tag { font-size: 11px; color: var(--primary); font-weight: 700; background: rgba(223, 188, 116, 0.1); padding: 2px 8px; border-radius: 5px; }
+        .admin-section { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        .admin-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; }
     </style>
 </head>
 <body>
@@ -77,14 +80,14 @@
             <input type="text" id="logUser" class="auth-input" placeholder="Username">
             <input type="password" id="logPass" class="auth-input" placeholder="Password">
             <button class="btn-primary" onclick="login()">Login</button>
-            <p onclick="toggleAuth('create')" style="margin-top:20px; font-size:12px; color:var(--text-muted); cursor:pointer;">New here? Create Account</p>
+            <p onclick="toggleAuth('create')" style="margin-top:20px; font-size:12px; color:var(--text-muted); cursor:pointer;">Create Account</p>
         </div>
         <div class="auth-box" id="createBox" style="display:none;">
-            <h1>JOIN US</h1>
+            <h1>JOIN AUREUM</h1>
             <input type="text" id="regUser" class="auth-input" placeholder="Username">
             <input type="password" id="regPass" class="auth-input" placeholder="Password">
             <button class="btn-primary" onclick="register()">Register</button>
-            <p onclick="toggleAuth('login')" style="margin-top:20px; font-size:12px; color:var(--text-muted); cursor:pointer;">Back to Login</p>
+            <p onclick="toggleAuth('login')" style="margin-top:20px; font-size:12px; color:var(--text-muted); cursor:pointer;">Login</p>
         </div>
     </div>
 
@@ -94,7 +97,9 @@
             <select id="searchCat"></select>
             <input type="text" id="searchInput" placeholder="Search...">
         </div>
-        <button class="hamburger" onclick="toggleMenu(true)"><i class="fas fa-bars"></i></button>
+        <button class="hamburger" onclick="toggleMenu(true)">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
     <div id="sideMenu">
@@ -106,25 +111,21 @@
         <div class="menu-item" onclick="toggleOverlay('myPostsOverlay', true); toggleMenu(false)"><i class="fas fa-images"></i> My Posts</div>
         <div class="menu-item" onclick="toggleOverlay('contactOverlay', true); toggleMenu(false)"><i class="fas fa-envelope"></i> Contact Us</div>
         
-        <div id="adminMenuBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="showAdminTools(); toggleMenu(false)"><i class="fas fa-cog"></i> Admin Panel</div>
+        <div id="adminMenuBtn" class="menu-item" style="display:none; color:var(--primary);" onclick="toggleOverlay('adminOverlay', true); toggleMenu(false)"><i class="fas fa-user-shield"></i> Admin Panel</div>
         
         <div class="logout-box" onclick="logout()">Logout</div>
     </div>
 
     <div class="wrapper">
-        <div id="adminTools" style="display:none;" class="admin-card">
-            <h3 style="color:var(--primary); margin-bottom:15px;">Admin Dashboard</h3>
-            <p style="font-size:12px; color:var(--text-muted);">Manage Contact Info:</p>
-            <input type="text" id="admName" class="auth-input" placeholder="Admin Name">
-            <input type="text" id="admWA" class="auth-input" placeholder="Admin WhatsApp">
-            <button class="btn-primary" onclick="saveAdminDetails()">Update Contact Details</button>
-        </div>
         <div class="masonry-grid" id="marketGrid"></div>
     </div>
 
     <div id="postOverlay" class="slide-overlay">
-        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('postOverlay', false)"></i>
-        <img id="detImg" style="width:100%; border-radius:15px; margin-top:20px;">
+        <div class="overlay-header">
+            <i class="fas fa-chevron-down" style="cursor:pointer;" onclick="toggleOverlay('postOverlay', false)"></i>
+            <i id="overlayWishIcon" class="fas fa-heart wish-icon-overlay"></i>
+        </div>
+        <img id="detImg" style="width:100%; border-radius:15px; margin-top:15px;">
         <h1 id="detTitle" style="margin-top:15px;"></h1>
         <p id="detDesc" style="color:var(--text-muted); margin:10px 0;"></p>
         <div id="detPrice" style="font-size:24px; color:var(--primary); font-weight:700; margin-bottom:20px;"></div>
@@ -132,33 +133,44 @@
         <button id="cartBtnAction" class="cart-btn">Add to Cart</button>
     </div>
 
-    <div id="contactOverlay" class="slide-overlay">
-        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('contactOverlay', false)"></i>
-        <h2 style="margin-top:20px; color:var(--primary);">Contact Us</h2>
-        <div class="admin-card" style="margin-top:20px; text-align:center;">
-            <p style="color:var(--text-muted);">Administrator</p>
-            <h1 id="dispAdmName">Admin</h1>
-            <p id="dispAdmWA" style="font-size:20px; margin-top:10px; color:var(--primary);"></p>
+    <div id="adminOverlay" class="slide-overlay">
+        <i class="fas fa-times close-btn" onclick="toggleOverlay('adminOverlay', false)" style="position:absolute; top:20px; right:20px;"></i>
+        <h2 style="margin:20px 0; color:var(--primary);">Admin Management</h2>
+        
+        <div class="admin-section">
+            <h4>Contact Info Settings</h4>
+            <input type="text" id="admName" class="auth-input" placeholder="Admin Name" style="margin-top:10px;">
+            <input type="text" id="admWA" class="auth-input" placeholder="WhatsApp Number">
+            <button class="btn-primary" onclick="saveAdminDetails()">Save Details</button>
+        </div>
+
+        <div class="admin-section">
+            <h4>Manage Categories</h4>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <input type="text" id="newCat" class="auth-input" placeholder="Category Name" style="margin-bottom:0;">
+                <button class="btn-primary" style="width:auto; padding:0 20px;" onclick="addCategory()">Add</button>
+            </div>
+            <div id="adminCatList" style="margin-top:15px;"></div>
+        </div>
+
+        <div class="admin-section">
+            <h4>Manage All Posts (Pin/Delete)</h4>
+            <div id="adminPostList" style="margin-top:10px;"></div>
         </div>
     </div>
 
-    <div id="cartOverlay" class="slide-overlay">
-        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('cartOverlay', false)"></i>
-        <h2 style="margin-top:20px;">Shopping Cart</h2>
-        <div id="cartList" style="margin-top:20px;"></div>
+    <div id="contactOverlay" class="slide-overlay">
+        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('contactOverlay', false)" style="position:absolute; top:20px; right:20px;"></i>
+        <h2 style="margin-top:20px;">Contact Us</h2>
+        <div class="admin-section" style="text-align:center; margin-top:20px;">
+            <h1 id="dispAdmName"></h1>
+            <p id="dispAdmWA" style="font-size:20px; color:var(--primary); margin-top:10px;"></p>
+        </div>
     </div>
 
-    <div id="wishOverlay" class="slide-overlay">
-        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('wishOverlay', false)"></i>
-        <h2 style="margin-top:20px;">Wishlist</h2>
-        <div id="wishList" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="myPostsOverlay" class="slide-overlay">
-        <i class="fas fa-chevron-down close-btn" onclick="toggleOverlay('myPostsOverlay', false)"></i>
-        <h2 style="margin-top:20px;">My Shared Posts</h2>
-        <div id="myPostsList" style="margin-top:20px;"></div>
-    </div>
+    <div id="cartOverlay" class="slide-overlay"><h2 style="margin-top:20px;">Cart</h2><div id="cartList"></div></div>
+    <div id="wishOverlay" class="slide-overlay"><h2 style="margin-top:20px;">Wishlist</h2><div id="wishList"></div></div>
+    <div id="myPostsOverlay" class="slide-overlay"><h2 style="margin-top:20px;">My Posts</h2><div id="myPostsList"></div></div>
 
     <div id="sellModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center; padding:20px;">
         <div class="auth-box">
@@ -177,10 +189,10 @@
     <script>
         let users = JSON.parse(localStorage.getItem('aureum_users')) || { 'aureum': '1234' };
         let adminDetails = JSON.parse(localStorage.getItem('aureum_admin_info')) || { name: 'Admin', wa: '+94 77 000 0000' };
+        let categories = JSON.parse(localStorage.getItem('aureum_cats')) || ['All', 'Luxury', 'Electronics', 'Fashion'];
         let currentUser = localStorage.getItem('aureum_session');
-        let cart = JSON.parse(localStorage.getItem('aureum_cart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('aureum_wish')) || [];
-        let categories = ['All', 'Luxury', 'Electronics', 'Fashion', 'Art'];
+        let cart = JSON.parse(localStorage.getItem('aureum_cart')) || [];
 
         window.onload = () => { if(currentUser) startApp(); updateCatDropdowns(); loadAdminDisplay(); };
 
@@ -192,18 +204,14 @@
             renderGrid();
         }
 
-        // --- Post Logic ---
         function renderGrid() {
             let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            items.sort((a,b) => (b.pinned || false) - (a.pinned || false));
             document.getElementById('marketGrid').innerHTML = items.map(i => `
-                <div class="pin-card">
-                    <div class="wish-icon ${wishlist.includes(i.id) ? 'active' : ''}" onclick="toggleWish(${i.id}, event)">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div onclick="openPost(${i.id})">
-                        <img src="${i.img}">
-                        <div class="pin-title">${i.name}</div>
-                    </div>
+                <div class="pin-card" onclick="openPost(${i.id})">
+                    ${i.pinned ? '<span class="pinned-tag">PINNED</span>' : ''}
+                    <img src="${i.img}">
+                    <div class="pin-title">${i.name}</div>
                 </div>
             `).join('');
         }
@@ -215,110 +223,33 @@
             document.getElementById('detTitle').innerText = item.name;
             document.getElementById('detDesc').innerText = item.desc;
             document.getElementById('detPrice').innerText = item.price;
-            document.getElementById('detWA').href = `https://wa.me/${item.wa.replace(/\D/g,'')}?text=I'm interested on this item!`;
-            document.getElementById('cartBtnAction').onclick = () => addToCart(item);
+            document.getElementById('detWA').href = `https://wa.me/${item.wa.replace(/\D/g,'')}?text=Available?`;
+            
+            let wishBtn = document.getElementById('overlayWishIcon');
+            wishBtn.className = wishlist.includes(id) ? 'fas fa-heart wish-icon-overlay active' : 'fas fa-heart wish-icon-overlay';
+            wishBtn.onclick = () => toggleWish(id);
+
+            document.getElementById('cartBtnAction').onclick = () => {
+                cart.push({...item, buyer: currentUser});
+                localStorage.setItem('aureum_cart', JSON.stringify(cart));
+                alert("Added to Cart!");
+            };
             toggleOverlay('postOverlay', true);
         }
 
-        // --- Cart & Wishlist Logic ---
-        function addToCart(item) {
-            cart.push({ ...item, buyer: currentUser });
-            localStorage.setItem('aureum_cart', JSON.stringify(cart));
-            alert(`Added to cart! Seller: ${item.seller}`);
-            renderCart();
-        }
-
-        function renderCart() {
-            document.getElementById('cartList').innerHTML = cart.map(i => `
-                <div class="cart-item">
-                    <div style="display:flex; gap:10px;">
-                        <img src="${i.img}" width="50" height="50" style="border-radius:8px; object-fit:cover;">
-                        <div>
-                            <p style="font-weight:700;">${i.name}</p>
-                            <span class="seller-tag">Seller: ${i.seller}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleWish(id, e) {
-            e.stopPropagation();
+        function toggleWish(id) {
             if(wishlist.includes(id)) wishlist = wishlist.filter(x => x !== id);
             else wishlist.push(id);
             localStorage.setItem('aureum_wish', JSON.stringify(wishlist));
-            renderGrid(); renderWish();
+            openPost(id); renderGrid();
         }
 
-        function renderWish() {
-            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            let wishItems = items.filter(i => wishlist.includes(i.id));
-            document.getElementById('wishList').innerHTML = wishItems.map(i => `
-                <div class="cart-item" onclick="openPost(${i.id})">
-                    <p>${i.name} - ${i.price}</p>
-                </div>
-            `).join('');
-        }
-
-        // --- My Posts Logic (Edit/Delete) ---
-        function renderMyPosts() {
-            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            let myItems = items.filter(i => i.seller === currentUser);
-            document.getElementById('myPostsList').innerHTML = myItems.map(i => `
-                <div class="cart-item">
-                    <p style="font-weight:700;">${i.name}</p>
-                    <div style="margin-top:10px; display:flex; gap:10px;">
-                        <button onclick="deletePost(${i.id})" style="background:#ff3b30; color:white; border:none; padding:5px 10px; border-radius:5px;">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function deletePost(id) {
-            if(!confirm("Delete this post?")) return;
-            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            items = items.filter(i => i.id !== id);
-            localStorage.setItem('aureum_items', JSON.stringify(items));
-            renderGrid(); renderMyPosts();
-        }
-
-        // --- Core UI Functions ---
-        function toggleOverlay(id, show) { 
-            document.getElementById(id).classList.toggle('active', show); 
-            if(id === 'cartOverlay') renderCart();
-            if(id === 'wishOverlay') renderWish();
-            if(id === 'myPostsOverlay') renderMyPosts();
-        }
-        
-        function login() {
-            let u = document.getElementById('logUser').value, p = document.getElementById('logPass').value;
-            if(users[u] === p) { localStorage.setItem('aureum_session', u); location.reload(); }
-            else alert("Invalid Login");
-        }
-
-        function register() {
-            let u = document.getElementById('regUser').value, p = document.getElementById('regPass').value;
-            users[u] = p; localStorage.setItem('aureum_users', JSON.stringify(users));
-            alert("Registered! Please login."); toggleAuth('login');
-        }
-
-        function publish() {
-            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
-            items.push({
-                id: Date.now(), name: document.getElementById('pName').value,
-                price: document.getElementById('pPrice').value, cat: document.getElementById('pCat').value,
-                desc: document.getElementById('pDesc').value, wa: document.getElementById('pWA').value,
-                img: currentImg, seller: currentUser
-            });
-            localStorage.setItem('aureum_items', JSON.stringify(items));
-            closeModal('sellModal'); renderGrid();
-        }
-
+        // --- Admin Functions ---
         function saveAdminDetails() {
             adminDetails.name = document.getElementById('admName').value;
             adminDetails.wa = document.getElementById('admWA').value;
             localStorage.setItem('aureum_admin_info', JSON.stringify(adminDetails));
-            loadAdminDisplay(); alert("Admin Info Updated!");
+            loadAdminDisplay(); alert("Admin Info Saved!");
         }
 
         function loadAdminDisplay() {
@@ -328,19 +259,90 @@
             document.getElementById('admWA').value = adminDetails.wa;
         }
 
+        function addCategory() {
+            let val = document.getElementById('newCat').value.trim();
+            if(val && !categories.includes(val)) {
+                categories.push(val);
+                localStorage.setItem('aureum_cats', JSON.stringify(categories));
+                updateCatDropdowns(); renderAdminCats();
+                document.getElementById('newCat').value = '';
+            }
+        }
+
+        function removeCategory(cat) {
+            if(cat === 'All') return;
+            categories = categories.filter(c => c !== cat);
+            localStorage.setItem('aureum_cats', JSON.stringify(categories));
+            updateCatDropdowns(); renderAdminCats();
+        }
+
+        function renderAdminCats() {
+            document.getElementById('adminCatList').innerHTML = categories.map(c => `
+                <div class="admin-item-row">
+                    <span>${c}</span>
+                    ${c !== 'All' ? `<i class="fas fa-trash" onclick="removeCategory('${c}')" style="color:#ff3b30; cursor:pointer;"></i>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderAdminPosts() {
+            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            document.getElementById('adminPostList').innerHTML = items.map(i => `
+                <div class="admin-item-row">
+                    <span style="font-size:12px;">${i.name}</span>
+                    <div style="display:flex; gap:10px;">
+                        <i class="fas fa-thumbtack" onclick="togglePin(${i.id})" style="color:${i.pinned ? '#dfbc74' : '#555'}; cursor:pointer;"></i>
+                        <i class="fas fa-trash" onclick="adminDeletePost(${i.id})" style="color:#ff3b30; cursor:pointer;"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function togglePin(id) {
+            let items = JSON.parse(localStorage.getItem('aureum_items'));
+            let item = items.find(i => i.id === id);
+            item.pinned = !item.pinned;
+            localStorage.setItem('aureum_items', JSON.stringify(items));
+            renderAdminPosts(); renderGrid();
+        }
+
+        function adminDeletePost(id) {
+            if(!confirm("Delete this post permanently?")) return;
+            let items = JSON.parse(localStorage.getItem('aureum_items'));
+            items = items.filter(i => i.id !== id);
+            localStorage.setItem('aureum_items', JSON.stringify(items));
+            renderAdminPosts(); renderGrid();
+        }
+
+        function toggleOverlay(id, show) {
+            document.getElementById(id).classList.toggle('active', show);
+            if(show && id === 'adminOverlay') { renderAdminCats(); renderAdminPosts(); }
+            if(show && id === 'myPostsOverlay') renderMyPosts();
+        }
+
+        // --- Core Auth & Shared ---
+        function login() {
+            let u = document.getElementById('logUser').value, p = document.getElementById('logPass').value;
+            if(users[u] === p) { localStorage.setItem('aureum_session', u); location.reload(); }
+            else alert("Error");
+        }
+        function register() {
+            let u = document.getElementById('regUser').value, p = document.getElementById('regPass').value;
+            users[u] = p; localStorage.setItem('aureum_users', JSON.stringify(users));
+            toggleAuth('login');
+        }
         function adminPrompt() {
             let u = prompt("Admin:"), p = prompt("Pass:");
             if(u === 'aureum' && p === '1234') { localStorage.setItem('aureum_session', u); location.reload(); }
         }
-
         function toggleAuth(m) {
             document.getElementById('loginBox').style.display = m === 'login' ? 'block' : 'none';
             document.getElementById('createBox').style.display = m === 'create' ? 'block' : 'none';
         }
+        function logout() { localStorage.removeItem('aureum_session'); location.reload(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function logout() { localStorage.removeItem('aureum_session'); location.reload(); }
         function updateCatDropdowns() {
             document.getElementById('searchCat').innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
             document.getElementById('pCat').innerHTML = categories.filter(c => c !== 'All').map(c => `<option value="${c}">${c}</option>`).join('');
@@ -350,6 +352,23 @@
             const r = new FileReader(); r.onload = () => currentImg = r.result;
             r.readAsDataURL(e.target.files[0]);
         };
+        function publish() {
+            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            items.push({
+                id: Date.now(), name: document.getElementById('pName').value, price: document.getElementById('pPrice').value,
+                cat: document.getElementById('pCat').value, desc: document.getElementById('pDesc').value,
+                wa: document.getElementById('pWA').value, img: currentImg, seller: currentUser, pinned: false
+            });
+            localStorage.setItem('aureum_items', JSON.stringify(items));
+            closeModal('sellModal'); renderGrid();
+        }
+        function renderMyPosts() {
+            let items = JSON.parse(localStorage.getItem('aureum_items')) || [];
+            let myItems = items.filter(i => i.seller === currentUser);
+            document.getElementById('myPostsList').innerHTML = myItems.map(i => `
+                <div class="admin-item-row"><span>${i.name}</span><i class="fas fa-trash" onclick="adminDeletePost(${i.id})" style="color:#ff3b30; cursor:pointer;"></i></div>
+            `).join('');
+        }
     </script>
 </body>
-                          </html>
+            </html>
