@@ -23,57 +23,73 @@
         /* --- UI Elements --- */
         header { padding: 25px 5% 10px 5%; position: sticky; top: 0; z-index: 1000; background: var(--bg); }
         .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo { font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: 2px; }
+        .logo { font-size: 28px; font-weight: 800; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; }
         
         .search-row { margin: 15px 0; }
         .search-bar { display: flex; align-items: center; padding: 12px 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; backdrop-filter: var(--blur); }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 16px; }
 
         /* --- Category Scroll --- */
         .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .cat-item { padding: 8px 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .cat-bar::-webkit-scrollbar { display: none; }
+        .cat-item { padding: 8px 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .cat-item.active { background: var(--primary); color: black; border-color: var(--primary); }
 
         /* --- Grid & Cards --- */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px 5%; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
         
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 18px; overflow: hidden; cursor: pointer; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 18px; overflow: hidden; cursor: pointer; animation: fadeIn 0.5s ease; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #111; }
         .card-info { padding: 12px; }
 
-        /* --- Overlays --- */
+        /* --- Overlays & Panels --- */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .glass-panel { width: 100%; max-width: 420px; background: rgba(20,20,20,0.8); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; }
         
-        .input-glass, select, textarea { width: 100%; padding: 14px; background: var(--glass); border: 1px solid var(--glass-border); color: white; border-radius: 12px; margin-bottom: 12px; outline: none; display: block; }
+        .input-glass, select, textarea { width: 100%; padding: 14px; background: var(--glass); border: 1px solid var(--glass-border); color: white; border-radius: 12px; margin-bottom: 12px; outline: none; display: block; font-size: 14px; }
         select option { background: #111; color: white; }
-        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: black; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; }
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: black; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
         
-        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(10,10,10,0.95); border-left: 1px solid var(--glass-border); z-index: 4000; transition: 0.4s; padding: 40px 20px; }
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(10,10,10,0.95); backdrop-filter: blur(30px); border-left: 1px solid var(--glass-border); z-index: 4000; transition: 0.4s; padding: 40px 20px; }
         #sideMenu.active { right: 0; }
-        .menu-link { display: flex; align-items: center; gap: 15px; padding: 15px; color: white; font-weight: 600; border-radius: 12px; cursor: pointer; }
+        .menu-link { display: flex; align-items: center; gap: 15px; padding: 15px; color: white; font-weight: 600; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .menu-link:hover { background: var(--glass); color: var(--primary); }
-
         .exit { float: right; cursor: pointer; font-size: 20px; color: #777; }
+        
+        .shield-btn { font-size: 24px; color: rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; }
+        .shield-btn:hover { color: var(--primary); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div id="authOverlay" class="overlay" style="display: flex;">
         <div class="glass-panel" style="text-align: center;">
+            <div style="text-align: right;"><i class="fas fa-shield-alt shield-btn" onclick="toggleOverlay('adminLoginModal', true)"></i></div>
             <h1 style="color:var(--primary); margin-bottom:30px; letter-spacing: 3px;">AUREUM</h1>
             <input type="text" id="lUser" class="input-glass" placeholder="Username">
             <input type="password" id="lPass" class="input-glass" placeholder="Password">
             <button class="btn-main" onclick="login()">SIGN IN</button>
-            <p id="authMsg" style="color: red; margin-top: 10px; font-size: 12px;"></p>
+            <p id="authMsg" style="color: #ff4d4d; margin-top: 15px; font-size: 13px;"></p>
+        </div>
+    </div>
+
+    <div id="adminLoginModal" class="overlay">
+        <div class="glass-panel">
+            <i class="fas fa-times exit" onclick="toggleOverlay('adminLoginModal', false)"></i>
+            <h3 style="margin-bottom:20px;">Staff Verification</h3>
+            <input type="password" id="adminPassKey" class="input-glass" placeholder="Enter Shield Key">
+            <button class="btn-main" onclick="adminVerify()">VERIFY ACCESS</button>
         </div>
     </div>
 
     <header>
         <div class="nav-top">
-            <div class="logo">AUREUM</div>
+            <div class="logo">Aureum</div>
             <i class="fas fa-bars-staggered fa-lg" onclick="toggleMenu(true)" style="cursor:pointer;"></i>
         </div>
         <div class="search-row">
@@ -90,21 +106,23 @@
     <div id="sideMenu">
         <i class="fas fa-times exit" onclick="toggleMenu(false)"></i>
         <div style="margin-top:40px;">
-            <div class="menu-link" style="background:var(--glass); margin-bottom:20px;"><i class="fas fa-user"></i> <span id="uDisp">User</span></div>
-            <div class="menu-link" onclick="openPostModal()"><i class="fas fa-plus-circle"></i> Publish Ad</div>
+            <div class="menu-link" style="background:var(--glass); margin-bottom:20px;"><i class="fas fa-user-circle"></i> <span id="uDisp">User</span></div>
+            <div class="menu-link" onclick="toggleOverlay('sellModal', true)"><i class="fas fa-plus-circle"></i> Publish Ad</div>
+            <div class="menu-link"><i class="fas fa-heart"></i> Wishlist</div>
+            <div class="menu-link"><i class="fas fa-shopping-cart"></i> My Cart</div>
             <div class="menu-link" onclick="toggleOverlay('myPostsOverlay', true)"><i class="fas fa-box"></i> My Ads</div>
-            <div class="menu-link" onclick="showSupport()"><i class="fas fa-headset"></i> Support</div>
-            <div id="admBtn" style="display:none;" class="menu-link" onclick="toggleOverlay('adminSettings', true)"><i class="fas fa-tools"></i> Admin</div>
-            <div class="menu-link" onclick="logout()" style="color:#ff4d4d;"><i class="fas fa-power-off"></i> Logout</div>
+            <div class="menu-link" onclick="showSupport()"><i class="fas fa-headset"></i> Customer Support</div>
+            <div id="admBtn" style="display:none;" class="menu-link" onclick="toggleOverlay('adminSettings', true)" style="color:var(--primary);"><i class="fas fa-user-shield"></i> Admin Settings</div>
+            <div class="menu-link" onclick="logout()" style="color:#ff4d4d; margin-top:20px;"><i class="fas fa-power-off"></i> Logout</div>
         </div>
     </div>
 
     <div id="sellModal" class="overlay">
         <div class="glass-panel">
-            <i class="fas fa-times exit" onclick="closeOverlay('sellModal')"></i>
+            <i class="fas fa-times exit" onclick="toggleOverlay('sellModal', false)"></i>
             <h3 style="margin-bottom:15px; color:var(--primary);">New Listing</h3>
             <input type="file" id="fileIn" class="input-glass">
-            <input type="text" id="pName" class="input-glass" placeholder="Title">
+            <input type="text" id="pName" class="input-glass" placeholder="Product Title">
             <input type="number" id="pPrice" class="input-glass" placeholder="Price (Rs.)">
             <select id="pCat" class="input-glass"></select>
             <textarea id="pDesc" class="input-glass" placeholder="Brief description..." rows="3"></textarea>
@@ -115,25 +133,34 @@
 
     <div id="supportModal" class="overlay">
         <div class="glass-panel" style="text-align:center;">
-            <i class="fas fa-times exit" onclick="closeOverlay('supportModal')"></i>
-            <h2 style="margin-bottom:15px;">Support</h2>
-            <div id="supportDetails" style="margin-bottom:20px;"></div>
-            <button class="btn-main" id="supportWA">Chat on WhatsApp</button>
+            <i class="fas fa-times exit" onclick="toggleOverlay('supportModal', false)"></i>
+            <i class="fas fa-headset" style="font-size:40px; color:var(--primary); margin-bottom:15px;"></i>
+            <h2 style="margin-bottom:10px;">Support</h2>
+            <div id="supportDetails" style="margin-bottom:20px; font-size: 16px;"></div>
+            <button class="btn-main" id="supportWA" style="background:#25D366; color:white;">Chat on WhatsApp</button>
         </div>
     </div>
 
     <div id="adminSettings" class="overlay">
         <div class="glass-panel">
-            <i class="fas fa-times exit" onclick="closeOverlay('adminSettings')"></i>
-            <h3 style="margin-bottom:15px;">Admin Panel</h3>
-            <input type="text" id="newCat" class="input-glass" placeholder="Category Name">
-            <button class="btn-main" onclick="addCat()">Add Category</button>
-            <div id="admCatList" style="margin-top:20px;"></div>
+            <i class="fas fa-times exit" onclick="toggleOverlay('adminSettings', false)"></i>
+            <h3 style="margin-bottom:20px; color:var(--primary);">Admin Controls</h3>
+            <label style="font-size:12px; color:#777;">ADD CATEGORY</label>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <input type="text" id="newCat" class="input-glass" placeholder="Name" style="margin-bottom:0;">
+                <button class="btn-main" style="width:80px; margin:0;" onclick="addCat()">Add</button>
+            </div>
+            <div id="admCatList" style="margin:15px 0; max-height:120px; overflow-y:auto; border:1px solid #222; border-radius:10px; padding:5px;"></div>
+            
+            <label style="font-size:12px; color:#777;">SUPPORT INFO</label>
+            <input type="text" id="suppName" class="input-glass" placeholder="Staff Name" style="margin-top:5px;">
+            <input type="text" id="suppNum" class="input-glass" placeholder="WhatsApp Number">
+            <button class="btn-main" onclick="updateSupport()">Update Support</button>
         </div>
     </div>
 
     <script>
-        // --- Firebase Initialization ---
+        // --- Configuration ---
         const firebaseConfig = {
             apiKey: "AIzaSyDNfce5v0BakfXV0F1aJ_teEj0TvFtPlbg",
             authDomain: "aureum-5f6f4.firebaseapp.com",
@@ -160,13 +187,17 @@
         }
 
         function login() {
-            let u = document.getElementById('lUser').value;
-            let p = document.getElementById('lPass').value;
+            let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
             if(u === 'aureum' && p === '1234') { localStorage.setItem('user', u); location.reload(); return; }
             db.ref('users/'+u).once('value', s => {
                 if(s.exists() && s.val() === p) { localStorage.setItem('user', u); location.reload(); }
-                else document.getElementById('authMsg').innerText = "Access Denied";
+                else document.getElementById('authMsg').innerText = "Invalid Credentials";
             });
+        }
+
+        function adminVerify() {
+            if(document.getElementById('adminPassKey').value === '1234') { localStorage.setItem('user', 'aureum'); location.reload(); }
+            else alert("Denied");
         }
 
         function loadItems() {
@@ -181,7 +212,6 @@
             let term = document.getElementById('searchInput').value.toLowerCase();
             let filtered = allItems.filter(i => (currentCat==='All' || i.cat===currentCat) && i.name.toLowerCase().includes(term));
             filtered.sort((a,b) => b.time - a.time);
-            
             document.getElementById('marketGrid').innerHTML = filtered.map(i => `
                 <div class="card">
                     <img src="${i.img}">
@@ -207,55 +237,38 @@
         }
 
         async function publish() {
-            let file = document.getElementById('fileIn').files[0];
-            let title = document.getElementById('pName').value;
-            let price = document.getElementById('pPrice').value;
-            let category = document.getElementById('pCat').value;
-            let btn = document.getElementById('pubBtn');
-
-            if(!file || !title || !price || !category) return alert("Please fill all fields and select an image!");
-
-            btn.disabled = true; btn.innerText = "Uploading...";
-
+            let file = document.getElementById('fileIn').files[0], title = document.getElementById('pName').value, price = document.getElementById('pPrice').value, category = document.getElementById('pCat').value, btn = document.getElementById('pubBtn');
+            if(!file || !title || !price || !category) return alert("Fill all fields!");
+            btn.disabled = true; btn.innerText = "Processing...";
             try {
                 let fd = new FormData(); fd.append("image", file);
                 let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, { method: "POST", body: fd });
                 let d = await res.json();
-                
                 if (d.success) {
-                    let postData = {
-                        name: title,
-                        price: price,
-                        cat: category,
-                        desc: document.getElementById('pDesc').value,
-                        wa: document.getElementById('pWA').value,
-                        img: d.data.url,
-                        seller: user,
-                        time: Date.now()
-                    };
-                    await db.ref('items').push(postData);
-                    alert("Published successfully!");
-                    closeOverlay('sellModal');
-                } else { alert("Image upload failed!"); }
-            } catch (e) { alert("Error: " + e.message); }
+                    await db.ref('items').push({ name: title, price: price, cat: category, desc: document.getElementById('pDesc').value, wa: document.getElementById('pWA').value, img: d.data.url, seller: user, time: Date.now() });
+                    toggleOverlay('sellModal', false); loadItems();
+                }
+            } catch (e) { alert(e.message); }
             finally { btn.disabled = false; btn.innerText = "PUBLISH NOW"; }
         }
 
         function showSupport() {
             db.ref('support').once('value', s => {
-                let d = s.val() || {name: "Support Staff", num: "0771234567"};
+                let d = s.val() || {name: "Aureum Staff", num: "0771234567"};
                 document.getElementById('supportDetails').innerHTML = `<b>${d.name}</b><br>${d.num}`;
                 document.getElementById('supportWA').onclick = () => window.open('https://wa.me/'+d.num);
                 toggleOverlay('supportModal', true);
             });
         }
 
+        function updateSupport() {
+            db.ref('support').set({name: document.getElementById('suppName').value, num: document.getElementById('suppNum').value}).then(() => alert("Updated"));
+        }
+
         function setCat(c) { currentCat = c; renderGrid(); loadCats(); }
         function addCat() { let v = document.getElementById('newCat').value; if(v) db.ref('categories').push(v); document.getElementById('newCat').value=""; }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; toggleMenu(false); }
-        function openPostModal() { toggleOverlay('sellModal', true); }
-        function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
         function logout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
