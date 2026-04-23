@@ -38,7 +38,6 @@
 
         .input-glass, select, textarea { width: 100%; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; border-radius: 15px; margin-bottom: 12px; outline: none; }
         .btn-gold { width: 100%; padding: 16px; background: var(--primary); color: black; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; }
-        .btn-create { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); margin-top: 15px; }
 
         .post-actions { position: absolute; right: 15px; top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
         .action-icon { width: 40px; height: 40px; background: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--glass-border); color: white; }
@@ -51,10 +50,13 @@
         #sideMenu.active { right: 0; }
         .menu-link { display: flex; align-items: center; gap: 15px; padding: 15px; color: white; border-radius: 12px; cursor: pointer; margin-bottom: 8px; }
         .menu-link:hover { background: var(--primary); color: black; }
-        .pre-img-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .pre-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; }
         
         .admin-only, .owner-only { display: none; }
+        .pre-img-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .pre-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; }
+
+        /* Manage Category List UI */
+        .manage-cat-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--glass-border); }
     </style>
 </head>
 <body>
@@ -65,7 +67,7 @@
             <input type="text" id="lUser" class="input-glass" placeholder="Username">
             <input type="password" id="lPass" class="input-glass" placeholder="Password">
             <button class="btn-gold" onclick="login()">SIGN IN</button>
-            <button class="btn-gold btn-create" onclick="createAccount()">CREATE ACCOUNT</button>
+            <button class="btn-gold" style="background:transparent; color:white; border:1px solid var(--glass-border); margin-top:10px;" onclick="createAccount()">CREATE ACCOUNT</button>
         </div>
     </div>
 
@@ -86,8 +88,8 @@
                 <div class="action-icon" onclick="wishPost()"><i class="fas fa-heart" id="vHeart"></i></div>
                 <div class="action-icon" onclick="addToCart()"><i class="fas fa-shopping-cart"></i></div>
                 <div class="action-icon admin-only" onclick="pinPost()"><i class="fas fa-thumbtack"></i></div>
-                <div class="action-icon owner-only" id="vEditBtn" onclick="editPostUI()"><i class="fas fa-edit"></i></div>
-                <div class="action-icon owner-only" id="vDelBtn" onclick="deletePost()" style="color:#ff4d4d;"><i class="fas fa-trash"></i></div>
+                <div class="action-icon owner-only" onclick="editPostUI()"><i class="fas fa-edit"></i></div>
+                <div class="action-icon owner-only" onclick="deletePost()" style="color:#ff4d4d;"><i class="fas fa-trash"></i></div>
                 <div class="action-icon" onclick="toggleOverlay('viewLayer', false)"><i class="fas fa-times"></i></div>
             </div>
             <div style="max-height: 85vh; overflow-y: auto; scrollbar-width: none; padding:0 25px 25px 25px;">
@@ -105,22 +107,38 @@
         </div>
     </div>
 
+    <div id="adminModal" class="overlay"><div class="glass-panel">
+        <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('adminModal', false)"></i>
+        <h3>Admin Settings</h3><br>
+        
+        <h4 style="font-size:14px; color:var(--primary); margin-bottom:10px;">Support Contact</h4>
+        <input type="text" id="supName" class="input-glass" placeholder="Support Name">
+        <input type="text" id="supNum" class="input-glass" placeholder="Support Number">
+        <button class="btn-gold" onclick="updateSupport()" style="margin-bottom:20px; padding:10px;">Update Support</button>
+        
+        <hr style="opacity:0.1; margin-bottom:20px;">
+        
+        <h4 style="font-size:14px; color:var(--primary); margin-bottom:10px;">Manage Categories</h4>
+        <div id="catManageList" style="margin-bottom:15px; max-height:200px; overflow-y:auto; scrollbar-width:none;"></div>
+        
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="newCatIn" class="input-glass" placeholder="New Category Name" style="margin-bottom:0;">
+            <button class="btn-gold" style="width:80px; padding:0;" onclick="addCat()"><i class="fas fa-plus"></i></button>
+        </div>
+    </div></div>
+
     <div id="sellModal" class="overlay"><div class="glass-panel">
         <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('sellModal', false)"></i>
         <h3 id="modalTitle">Publish Ad</h3><br>
         <button class="btn-gold" id="selImgBtn" style="background:#333; color:white; margin-bottom:15px;" onclick="document.getElementById('fileIn').click()">SELECT IMAGES</button>
-        <input type="file" id="fileIn" multiple hidden onchange="previewImages()"><div class="pre-img-grid" id="imgPre"></div>
-        <input type="text" id="pName" class="input-glass" placeholder="Title"><input type="number" id="pPrice" class="input-glass" placeholder="Price">
-        <select id="pCat" class="input-glass"></select><textarea id="pDescIn" class="input-glass" placeholder="Description..." rows="3"></textarea>
-        <input type="text" id="pWAIn" class="input-glass" placeholder="WhatsApp Number"><button class="btn-gold" id="pubBtn" onclick="publish()">PUBLISH NOW</button>
-    </div></div>
-
-    <div id="adminModal" class="overlay"><div class="glass-panel">
-        <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('adminModal', false)"></i>
-        <h3>Admin Settings</h3><br>
-        <input type="text" id="supName" class="input-glass" placeholder="Support Name"><input type="text" id="supNum" class="input-glass" placeholder="Support Number">
-        <button class="btn-gold" onclick="updateSupport()" style="margin-bottom:20px;">Update Support</button>
-        <div id="catManageList"></div><input type="text" id="newCatIn" class="input-glass" placeholder="New Cat Name"><button class="btn-gold" onclick="addCat()">Add Category</button>
+        <input type="file" id="fileIn" multiple hidden onchange="previewImages()">
+        <div class="pre-img-grid" id="imgPre"></div>
+        <input type="text" id="pName" class="input-glass" placeholder="Title">
+        <input type="number" id="pPrice" class="input-glass" placeholder="Price">
+        <select id="pCat" class="input-glass"></select>
+        <textarea id="pDescIn" class="input-glass" placeholder="Description..." rows="3"></textarea>
+        <input type="text" id="pWAIn" class="input-glass" placeholder="WhatsApp Number">
+        <button class="btn-gold" id="pubBtn" onclick="publish()">PUBLISH NOW</button>
     </div></div>
 
     <div id="cartModal" class="overlay"><div class="glass-panel">
@@ -183,6 +201,48 @@
             db.ref('users/'+u).set(p).then(() => alert("Created! Please Login."));
         }
 
+        // --- Category Management ---
+        function loadCats() {
+            db.ref('categories').on('value', s => {
+                let cats = [];
+                let catsHtml = '<div class="cat-item ' + (currentCat === "All" ? "active" : "") + '" onclick="setCat(\'All\')">All</div>';
+                let manageHtml = '';
+                let selectHtml = '';
+
+                s.forEach(c => {
+                    let name = c.val();
+                    let key = c.key;
+                    catsHtml += `<div class="cat-item ${currentCat===name?'active':''}" onclick="setCat('${name}')">${name}</div>`;
+                    manageHtml += `
+                        <div class="manage-cat-item">
+                            <span>${name}</span>
+                            <i class="fas fa-trash-alt" style="color:#ff4d4d; cursor:pointer;" onclick="deleteCat('${key}')"></i>
+                        </div>`;
+                    selectHtml += `<option value="${name}">${name}</option>`;
+                });
+
+                document.getElementById('catBar').innerHTML = catsHtml;
+                document.getElementById('catManageList').innerHTML = manageHtml || '<p style="opacity:0.3; font-size:12px;">No categories added</p>';
+                document.getElementById('pCat').innerHTML = selectHtml;
+            });
+        }
+
+        function addCat() {
+            let val = document.getElementById('newCatIn').value.trim();
+            if(val) {
+                db.ref('categories').push(val).then(() => {
+                    document.getElementById('newCatIn').value = '';
+                });
+            }
+        }
+
+        function deleteCat(key) {
+            if(confirm("Delete this category?")) {
+                db.ref('categories/' + key).remove();
+            }
+        }
+
+        // --- Core Market Functions ---
         function loadItems() {
             db.ref('items').on('value', s => {
                 allItems = []; s.forEach(c => { let i = c.val(); i.id = c.key; allItems.push(i); });
@@ -208,13 +268,11 @@
             document.getElementById('vPrice').innerText = "Rs. " + Number(i.price).toLocaleString();
             document.getElementById('vDesc').innerText = i.desc;
             document.getElementById('vImg').src = curImgs[0] || '';
-            document.getElementById('vTime').innerText = "By: " + i.seller;
+            document.getElementById('vTime').innerText = "Seller: " + i.seller;
             document.getElementById('vWA').onclick = () => window.open('https://wa.me/'+i.wa);
             
-            // Permissions Check
             let isOwner = (i.seller === user || isAdmin);
             document.querySelectorAll('.owner-only').forEach(e => e.style.display = isOwner ? 'flex' : 'none');
-            
             toggleOverlay('viewLayer', true);
         }
 
@@ -228,7 +286,6 @@
             document.getElementById('pDescIn').value = i.desc;
             document.getElementById('pWAIn').value = i.wa;
             document.getElementById('pubBtn').innerText = "UPDATE POST";
-            document.getElementById('selImgBtn').innerText = "CHANGE IMAGES (OPTIONAL)";
             toggleOverlay('viewLayer', false);
             openModal('sellModal');
         }
@@ -237,7 +294,6 @@
             let files = document.getElementById('fileIn').files;
             let btn = document.getElementById('pubBtn'); 
             btn.innerText = "Processing..."; btn.disabled = true;
-            
             let urls = editMode ? allItems.find(x=>x.id===curId).imgs : [];
             
             if(files.length > 0) {
@@ -250,50 +306,25 @@
             }
 
             let data = {
-                name: document.getElementById('pName').value,
-                price: document.getElementById('pPrice').value,
-                cat: document.getElementById('pCat').value,
-                desc: document.getElementById('pDescIn').value,
-                wa: document.getElementById('pWAIn').value,
-                imgs: urls,
-                seller: editMode ? allItems.find(x=>x.id===curId).seller : user,
-                time: editMode ? allItems.find(x=>x.id===curId).time : Date.now(),
-                pinned: editMode ? allItems.find(x=>x.id===curId).pinned : false
+                name: document.getElementById('pName').value, price: document.getElementById('pPrice').value,
+                cat: document.getElementById('pCat').value, desc: document.getElementById('pDescIn').value,
+                wa: document.getElementById('pWAIn').value, imgs: urls, seller: editMode ? allItems.find(x=>x.id===curId).seller : user,
+                time: Date.now(), pinned: editMode ? allItems.find(x=>x.id===curId).pinned : false
             };
 
             let ref = editMode ? db.ref('items/'+curId) : db.ref('items').push();
             ref.set(data).then(() => location.reload());
         }
 
-        function deletePost() {
-            if(confirm("Delete this Ad permanently?")) {
-                db.ref('items/'+curId).remove().then(() => toggleOverlay('viewLayer', false));
-            }
-        }
-
-        function pinPost() {
-            let i = allItems.find(x => x.id === curId);
-            db.ref('items/'+curId).update({pinned: !i.pinned});
-            toggleOverlay('viewLayer', false);
-        }
-
-        // --- Helpers ---
-        function changeSlide(dir) {
-            curIdx = (curIdx + dir + curImgs.length) % curImgs.length;
-            document.getElementById('vImg').src = curImgs[curIdx];
-        }
-        function loadCats() {
-            db.ref('categories').on('value', s => {
-                let cats = ['All']; s.forEach(c => cats.push(c.val()));
-                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-item ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
-                document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option value="${c}">${c}</option>`).join('');
-            });
-        }
+        // --- UI Logic ---
+        function changeSlide(dir) { curIdx = (curIdx + dir + curImgs.length) % curImgs.length; document.getElementById('vImg').src = curImgs[curIdx]; }
         function setCat(c) { currentCat = c; renderGrid(); loadCats(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
-        function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; if(!s && id==='sellModal') resetForm(); }
+        function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
         function openModal(id) { toggleOverlay(id, true); toggleMenu(false); }
-        function resetForm() { editMode = false; document.getElementById('modalTitle').innerText = "Publish Ad"; document.getElementById('pubBtn').innerText = "PUBLISH NOW"; document.getElementById('selImgBtn').innerText = "SELECT IMAGES"; document.getElementById('pName').value=''; document.getElementById('pPrice').value=''; document.getElementById('pDescIn').value=''; document.getElementById('imgPre').innerHTML=''; }
+        function logout() { localStorage.clear(); location.reload(); }
+        function deletePost() { if(confirm("Delete Ad?")) db.ref('items/'+curId).remove().then(() => toggleOverlay('viewLayer', false)); }
+        function pinPost() { let i = allItems.find(x => x.id === curId); db.ref('items/'+curId).update({pinned: !i.pinned}); toggleOverlay('viewLayer', false); }
         function previewImages() {
             let pre = document.getElementById('imgPre'); pre.innerHTML = '';
             for(let f of document.getElementById('fileIn').files) {
@@ -302,8 +333,9 @@
             }
         }
         function openMyPosts() { currentCat = 'My'; renderGrid(); toggleMenu(false); }
-        function logout() { localStorage.clear(); location.reload(); }
-        function showSupport() { db.ref('settings/support').once('value', s => alert("Name: "+s.val().name+"\nWhatsApp: "+s.val().num)); }
+        function loadSupport() { db.ref('settings/support').on('value', s => { if(s.exists()){ document.getElementById('supName').value=s.val().name; document.getElementById('supNum').value=s.val().num; }}); }
+        function updateSupport() { db.ref('settings/support').set({ name: document.getElementById('supName').value, num: document.getElementById('supNum').value }); alert("Updated"); }
+        function showSupport() { db.ref('settings/support').once('value', s => alert("Support: "+s.val().name+"\nWhatsApp: "+s.val().num)); }
         function addToCart() {
             let cart = JSON.parse(localStorage.getItem('cart') || '[]');
             if(!cart.includes(curId)) { cart.push(curId); localStorage.setItem('cart', JSON.stringify(cart)); alert("Added to Cart!"); }
@@ -319,14 +351,8 @@
                 </div>`).join('') || 'Cart is empty';
             openModal('cartModal');
         }
-        function removeFromCart(id) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            localStorage.setItem('cart', JSON.stringify(cart.filter(x => x !== id))); openCart();
-        }
+        function removeFromCart(id) { let cart = JSON.parse(localStorage.getItem('cart') || '[]'); localStorage.setItem('cart', JSON.stringify(cart.filter(x => x !== id))); openCart(); }
         function wishPost() { alert("Added to Wishlist!"); }
-        function loadSupport() { db.ref('settings/support').on('value', s => { if(s.exists()){ document.getElementById('supName').value=s.val().name; document.getElementById('supNum').value=s.val().num; }}); }
-        function updateSupport() { db.ref('settings/support').set({ name: document.getElementById('supName').value, num: document.getElementById('supNum').value }); alert("Updated"); }
-        function addCat() { db.ref('categories').push(document.getElementById('newCatIn').value); document.getElementById('newCatIn').value=''; }
     </script>
 </body>
 </html>
