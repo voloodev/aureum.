@@ -33,19 +33,18 @@
         .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
         .pin-tag { position: absolute; top: 10px; left: 10px; background: var(--primary); color: black; padding: 4px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
 
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: var(--blur); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: var(--blur); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .glass-panel { width: 100%; max-width: 450px; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; scrollbar-width: none; }
 
         .input-glass, select, textarea { width: 100%; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; border-radius: 15px; margin-bottom: 12px; outline: none; }
         .btn-gold { width: 100%; padding: 16px; background: var(--primary); color: black; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; }
 
-        /* View Post UI */
         .post-actions { position: absolute; right: 15px; top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
         .action-icon { width: 40px; height: 40px; background: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--glass-border); color: white; }
 
         .slider-box { width: 100%; aspect-ratio: 1/1; position: relative; background: #000; border-radius: 20px; overflow: hidden; margin-bottom: 15px; }
         .slider-box img { width: 100%; height: 100%; object-fit: cover; }
-        .slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
 
         #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); border-left: 1px solid var(--glass-border); z-index: 4000; transition: 0.4s; padding: 40px 20px; }
         #sideMenu.active { right: 0; }
@@ -53,6 +52,9 @@
         .menu-link:hover { background: var(--primary); color: black; }
         .pre-img-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .pre-img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; }
+        
+        .admin-only { display: none; }
+        .cat-manage-item { display: flex; justify-content: space-between; background: var(--glass); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -62,7 +64,7 @@
             <h3 style="color:var(--primary); margin-bottom:20px;">Admin Access</h3>
             <input type="text" id="sUser" class="input-glass" placeholder="Username">
             <input type="password" id="sPass" class="input-glass" placeholder="Password">
-            <button class="btn-gold" onclick="verifyAdmin()">LOGIN ADMIN</button>
+            <button class="btn-gold" onclick="verifyAdmin()">VERIFY LOGIN</button>
             <p onclick="toggleOverlay('shieldLayer', false)" style="margin-top:15px; cursor:pointer; opacity:0.5;">Cancel</p>
         </div>
     </div>
@@ -91,13 +93,12 @@
     <div id="viewLayer" class="overlay">
         <div class="glass-panel" style="padding:0; overflow:hidden;">
             <div class="post-actions">
-                <div class="action-icon" onclick="wishPost()"><i class="fas fa-heart" id="vHeart"></i></div>
+                <div class="action-icon" onclick="wishPost()"><i class="fas fa-heart"></i></div>
                 <div class="action-icon" onclick="addToCart()"><i class="fas fa-shopping-cart"></i></div>
-                <div class="action-icon admin-only" onclick="pinPost()"><i class="fas fa-thumbtack"></i></div>
-                <div class="action-icon admin-only" onclick="deletePost()" style="color:#ff4d4d;"><i class="fas fa-trash"></i></div>
+                <div class="action-icon admin-only" id="pinAct" onclick="pinPost()"><i class="fas fa-thumbtack"></i></div>
+                <div class="action-icon admin-only delete-act" id="delAct" onclick="deletePost()" style="color:#ff4d4d;"><i class="fas fa-trash"></i></div>
                 <div class="action-icon" onclick="toggleOverlay('viewLayer', false)"><i class="fas fa-times"></i></div>
             </div>
-            
             <div style="max-height: 85vh; overflow-y: auto; scrollbar-width: none; padding:0 25px 25px 25px;">
                 <div class="slider-box" style="margin: 0 -25px 20px -25px; border-radius:0;">
                     <img id="vImg" src="">
@@ -120,15 +121,18 @@
         <input type="file" id="fileIn" multiple hidden onchange="previewImages()"><div class="pre-img-grid" id="imgPre"></div>
         <input type="text" id="pName" class="input-glass" placeholder="Title"><input type="number" id="pPrice" class="input-glass" placeholder="Price">
         <select id="pCat" class="input-glass"></select><textarea id="pDescIn" class="input-glass" placeholder="Description..." rows="3"></textarea>
-        <input type="text" id="pWAIn" class="input-glass" placeholder="WhatsApp Number"><button class="btn-gold" id="pubBtn" onclick="publish()">PUBLISH NOW</button>
+        <input type="text" id="pWAIn" class="input-glass" placeholder="WhatsApp Number"><button class="btn-gold" id="pubBtn" onclick="publish()">PUBLISH</button>
     </div></div>
 
     <div id="adminModal" class="overlay"><div class="glass-panel">
         <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('adminModal', false)"></i>
-        <h3>Admin Settings</h3><br>
+        <h3 style="color:var(--primary);">Admin Settings</h3><br>
+        <p style="font-size:12px; margin-bottom:10px;">Support Details:</p>
         <input type="text" id="supName" class="input-glass" placeholder="Support Name"><input type="text" id="supNum" class="input-glass" placeholder="Support Number">
-        <button class="btn-gold" onclick="updateSupport()" style="margin-bottom:20px;">Update Support</button>
-        <div id="catManageList"></div><input type="text" id="newCatIn" class="input-glass" placeholder="New Cat Name"><button class="btn-gold" onclick="addCat()">Add Category</button>
+        <button class="btn-gold" onclick="updateSupport()" style="padding:10px; margin-bottom:20px;">Save Support</button>
+        <p style="font-size:12px; margin-bottom:10px;">Manage Categories:</p>
+        <div id="catManageList"></div>
+        <input type="text" id="newCatIn" class="input-glass" placeholder="New Category Name"><button class="btn-gold" onclick="addCat()">Add Category</button>
     </div></div>
 
     <div id="cartModal" class="overlay"><div class="glass-panel">
@@ -139,12 +143,12 @@
     <div id="sideMenu">
         <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleMenu(false)"></i>
         <div style="margin-top:40px;">
-            <div class="menu-link"><i class="fas fa-user-circle"></i> <span id="uDisp">User</span></div>
+            <div class="menu-link"><i class="fas fa-user"></i> <span id="uDisp">User</span></div>
             <div class="menu-link" onclick="openModal('sellModal')"><i class="fas fa-plus-circle"></i> Publish Ad</div>
             <div class="menu-link" onclick="openCart()"><i class="fas fa-shopping-basket"></i> My Cart</div>
             <div class="menu-link" onclick="openMyPosts()"><i class="fas fa-box"></i> My Posts</div>
-            <div class="menu-link admin-only" onclick="toggleOverlay('adminModal', true)"><i class="fas fa-cog"></i> Admin Settings</div>
-            <div class="menu-link" onclick="showSupport()"><i class="fas fa-headset"></i> Customer Support</div>
+            <div class="menu-link admin-only" id="adminLink" onclick="toggleOverlay('adminModal', true)"><i class="fas fa-cog"></i> Admin Settings</div>
+            <div class="menu-link" onclick="showSupport()"><i class="fas fa-headset"></i> Support</div>
             <div class="menu-link" onclick="logout()" style="color:#ff4d4d; margin-top:20px;"><i class="fas fa-power-off"></i> Logout</div>
         </div>
     </div>
@@ -171,20 +175,26 @@
             if(user) {
                 document.getElementById('authOverlay').style.display = 'none';
                 document.getElementById('uDisp').innerText = user;
-                if(isAdmin) document.querySelectorAll('.admin-only').forEach(e => e.style.display = 'flex');
+                if(isAdmin) {
+                    document.getElementById('adminLink').style.display = 'flex';
+                }
             }
             loadCats(); loadItems(); loadSupport();
         };
 
         function verifyAdmin() {
-            if(document.getElementById('sUser').value === 'aureum' && document.getElementById('sPass').value === '1234') {
-                localStorage.setItem('user', 'admin'); localStorage.setItem('isAdmin', 'true'); location.reload();
-            } else alert("Invalid Credentials");
+            let u = document.getElementById('sUser').value, p = document.getElementById('sPass').value;
+            if(u === 'aureum' && p === '1234') {
+                localStorage.setItem('user', 'admin'); localStorage.setItem('isAdmin', 'true');
+                location.reload();
+            } else alert("Access Denied!");
         }
 
         function login() {
             let u = document.getElementById('lUser').value, p = document.getElementById('lPass').value;
-            db.ref('users/'+u).once('value', s => { if(s.exists() && s.val() === p) { localStorage.setItem('user', u); location.reload(); } });
+            db.ref('users/'+u).once('value', s => { 
+                if(s.exists() && s.val() === p) { localStorage.setItem('user', u); localStorage.setItem('isAdmin', 'false'); location.reload(); }
+            });
         }
 
         function loadItems() {
@@ -196,7 +206,10 @@
 
         function renderGrid() {
             let term = document.getElementById('searchInput').value.toLowerCase();
-            let filtered = allItems.filter(i => (currentCat==='All' || i.cat===currentCat) && i.name.toLowerCase().includes(term));
+            let filtered = allItems.filter(i => {
+                let matchCat = (currentCat === 'All') || (currentCat === 'My' && i.seller === user) || (i.cat === currentCat);
+                return matchCat && i.name.toLowerCase().includes(term);
+            });
             filtered.sort((a,b) => (b.pinned?1:0)-(a.pinned?1:0) || b.time-a.time);
             document.getElementById('marketGrid').innerHTML = filtered.map(i => `
                 <div class="card" onclick="viewPost('${i.id}')">
@@ -214,10 +227,14 @@
             document.getElementById('vImg').src = curImgs[0] || '';
             document.getElementById('vTime').innerText = "Date: " + new Date(i.time).toLocaleString();
             document.getElementById('vWA').onclick = () => window.open('https://wa.me/'+i.wa);
+            
+            document.getElementById('delAct').style.display = (isAdmin || i.seller === user) ? 'flex' : 'none';
+            document.getElementById('pinAct').style.display = isAdmin ? 'flex' : 'none';
             toggleOverlay('viewLayer', true);
         }
 
         function changeSlide(dir) {
+            if(!curImgs.length) return;
             curIdx = (curIdx + dir + curImgs.length) % curImgs.length;
             document.getElementById('vImg').src = curImgs[curIdx];
         }
@@ -232,8 +249,8 @@
             let items = allItems.filter(i => cartIds.includes(i.id));
             document.getElementById('cartList').innerHTML = items.map(i => `
                 <div style="display:flex; gap:10px; margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
-                    <img src="${i.imgs[0]}" style="width:50px; height:50px; border-radius:5px; object-fit:cover;">
-                    <div style="flex:1;"><h5>${i.name}</h5><p style="color:var(--primary);">Rs. ${i.price}</p></div>
+                    <img src="${i.imgs[0]}" style="width:50px; height:50px; object-fit:cover; border-radius:5px;">
+                    <div style="flex:1;"><h6>${i.name}</h6><p style="color:var(--primary); font-size:12px;">Rs. ${i.price}</p></div>
                     <i class="fas fa-trash" onclick="removeFromCart('${i.id}')" style="color:#ff4d4d; cursor:pointer;"></i>
                 </div>`).join('');
             openModal('cartModal');
@@ -267,21 +284,27 @@
                 name: document.getElementById('pName').value, price: document.getElementById('pPrice').value,
                 cat: document.getElementById('pCat').value, desc: document.getElementById('pDescIn').value,
                 wa: document.getElementById('pWAIn').value, imgs: urls, seller: user, time: Date.now(), pinned: false
-            });
-            location.reload();
+            }).then(() => location.reload());
         }
 
         function loadCats() {
             db.ref('categories').on('value', s => {
-                let cats = ['All']; s.forEach(c => cats.push(c.val()));
+                let cats = ['All']; 
+                let manageHtml = '';
+                s.forEach(c => {
+                    cats.push(c.val());
+                    manageHtml += `<div class="cat-manage-item"><span>${c.val()}</span><i class="fas fa-trash" onclick="delCat('${c.key}')" style="cursor:pointer; color:#ff4d4d;"></i></div>`;
+                });
                 document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-item ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
                 document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option value="${c}">${c}</option>`).join('');
+                document.getElementById('catManageList').innerHTML = manageHtml;
             });
         }
 
+        function delCat(key) { if(confirm("Delete category?")) db.ref('categories/'+key).remove(); }
+        function addCat() { let val = document.getElementById('newCatIn').value; if(val) db.ref('categories').push(val); document.getElementById('newCatIn').value=''; }
         function loadSupport() { db.ref('settings/support').on('value', s => { if(s.exists()){ document.getElementById('supName').value=s.val().name; document.getElementById('supNum').value=s.val().num; }}); }
-        function updateSupport() { db.ref('settings/support').set({ name: document.getElementById('supName').value, num: document.getElementById('supNum').value }); alert("Updated"); }
-        function addCat() { db.ref('categories').push(document.getElementById('newCatIn').value); document.getElementById('newCatIn').value=''; }
+        function updateSupport() { db.ref('settings/support').set({ name: document.getElementById('supName').value, num: document.getElementById('supNum').value }); alert("Saved"); }
         function openMyPosts() { currentCat = 'My'; renderGrid(); toggleMenu(false); }
         function setCat(c) { currentCat = c; renderGrid(); loadCats(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
@@ -289,7 +312,7 @@
         function openModal(id) { toggleOverlay(id, true); toggleMenu(false); }
         function logout() { localStorage.clear(); location.reload(); }
         function showSupport() { db.ref('settings/support').once('value', s => alert("Name: "+s.val().name+"\nWhatsApp: "+s.val().num)); }
-        function deletePost() { if(confirm("Delete?")) { db.ref('items/'+curId).remove(); toggleOverlay('viewLayer', false); } }
+        function deletePost() { if(confirm("Delete this?")) { db.ref('items/'+curId).remove(); toggleOverlay('viewLayer', false); } }
         function pinPost() { let i = allItems.find(x => x.id === curId); db.ref('items/'+curId).update({pinned: !i.pinned}); toggleOverlay('viewLayer', false); }
         function wishPost() { alert("Added to Wishlist!"); }
     </script>
