@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureum | Premium Market</title>
+    <title>Aureum | Exclusive Market</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -15,67 +15,56 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
 
-        /* Header & Nav */
-        header { padding: 20px 5%; position: sticky; top: 0; z-index: 1000; background: rgba(5,5,5,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 3px; cursor: pointer; }
+        /* Header */
+        header { padding: 20px 5%; position: sticky; top: 0; z-index: 1000; background: rgba(5,5,5,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 4px; cursor: pointer; }
         
         .search-bar { display: flex; align-items: center; padding: 12px 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; margin: 15px 0; }
-        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; font-size: 14px; }
+        .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; margin-left: 10px; }
 
-        /* Category Bar - Fixed Logic */
-        .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; -ms-overflow-style: none; }
+        /* Categories */
+        .cat-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
         .cat-bar::-webkit-scrollbar { display: none; }
-        .cat-item { padding: 10px 22px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 25px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.4s; color: #aaa; }
-        .cat-item.active { background: var(--primary); color: black; font-weight: 800; border-color: var(--primary); box-shadow: 0 4px 15px rgba(223, 188, 116, 0.2); }
+        .cat-item { padding: 10px 22px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 25px; font-size: 13px; cursor: pointer; white-space: nowrap; transition: 0.3s; color: #888; }
+        .cat-item.active { background: var(--primary); color: black; font-weight: 800; border-color: var(--primary); }
 
-        /* Main Grid */
+        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px 5%; }
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
         
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; transition: 0.3s; cursor: pointer; position: relative; }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; transition: 0.3s; cursor: pointer; }
         .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
         .card-info { padding: 15px; }
-        .card-cat { font-size: 10px; text-transform: uppercase; color: var(--primary); font-weight: 700; margin-bottom: 5px; display: block; }
-        .card-title { font-weight: 600; font-size: 14px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-price { color: white; font-weight: 800; font-size: 16px; margin-bottom: 8px; }
-        .card-date { font-size: 10px; color: #555; display: flex; align-items: center; gap: 5px; }
+        .card-price { color: var(--primary); font-weight: 800; font-size: 16px; margin: 5px 0; }
+        .card-date { font-size: 10px; color: #555; display: block; margin-top: 5px; }
+
+        /* Overlays */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .glass-panel { width: 100%; max-width: 480px; background: rgba(20,20,20,0.8); border: 1px solid var(--glass-border); border-radius: 35px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; }
+        
+        .btn-gold { width: 100%; padding: 16px; background: var(--primary); color: black; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .input-glass { width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; border-radius: 18px; margin-bottom: 12px; outline: none; }
+        select.input-glass option { background: #111; color: white; }
 
         /* Side Menu */
-        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(8,8,8,0.98); backdrop-filter: blur(25px); z-index: 4000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); padding: 40px 20px; border-left: 1px solid var(--glass-border); }
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: #080808; z-index: 4000; transition: 0.4s; padding: 40px 20px; border-left: 1px solid var(--glass-border); }
         #sideMenu.active { right: 0; }
-        .menu-link { display: flex; align-items: center; gap: 15px; padding: 16px; color: #ccc; border-radius: 15px; cursor: pointer; margin-bottom: 10px; transition: 0.3s; }
+        .menu-link { display: flex; align-items: center; gap: 15px; padding: 15px; color: white; border-radius: 12px; cursor: pointer; margin-bottom: 5px; }
         .menu-link:hover { background: var(--glass); color: var(--primary); }
-        .menu-link i { width: 20px; text-align: center; }
-
-        /* Overlays & Modals */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .glass-panel { width: 100%; max-width: 480px; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); border-radius: 35px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; }
-        
-        /* Forms */
-        .btn-gold { width: 100%; padding: 16px; background: var(--primary); color: black; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; font-size: 14px; }
-        .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
-        .input-glass { width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; border-radius: 18px; margin-bottom: 12px; outline: none; font-size: 14px; }
-        .input-glass:focus { border-color: var(--primary); }
 
         /* Auth */
-        .auth-container { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        
-        /* List Items (Cart/My Ads) */
-        .list-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--glass-border); }
-        .list-item img { width: 65px; height: 65px; border-radius: 15px; object-fit: cover; }
-        .list-info { flex: 1; }
-        .list-info b { font-size: 14px; display: block; margin-bottom: 4px; }
-        .list-info small { color: var(--primary); font-weight: 700; }
-        .list-actions { display: flex; gap: 8px; }
-        .icon-btn { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: none; }
+        .auth-container { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+
+        /* List Items */
+        .list-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 20px; margin-bottom: 12px; }
+        .list-item img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
     </style>
 </head>
 <body>
 
     <div id="authScreen" class="auth-container">
-        <div style="width:100%; max-width:350px; text-align:center;">
-            <h1 style="color:var(--primary); letter-spacing:10px; margin-bottom:40px; font-weight:900;">AUREUM</h1>
+        <div style="width:100%; max-width:320px; text-align:center;">
+            <h1 style="color:var(--primary); letter-spacing:8px; margin-bottom:40px;">AUREUM</h1>
             <input type="text" id="lUser" class="input-glass" placeholder="Username">
             <input type="password" id="lPass" class="input-glass" placeholder="Password">
             <button class="btn-gold" onclick="handleAuth()">SIGN IN</button>
@@ -89,7 +78,7 @@
         </div>
         <div class="search-bar">
             <i class="fas fa-search" style="opacity:0.4;"></i>
-            <input type="text" id="searchInput" placeholder="Search for luxury items..." oninput="renderGrid()">
+            <input type="text" id="searchInput" placeholder="Search products..." oninput="renderGrid()">
         </div>
         <div class="cat-bar" id="catBar"></div>
     </header>
@@ -97,16 +86,16 @@
     <main class="grid" id="marketGrid"></main>
 
     <div id="viewLayer" class="overlay">
-        <div class="glass-panel" style="padding:0; overflow:hidden; border-radius:40px;">
-            <i class="fas fa-times" style="position:absolute; right:25px; top:25px; z-index:10; background:rgba(0,0,0,0.6); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer;" onclick="toggleOverlay('viewLayer', false)"></i>
+        <div class="glass-panel" style="padding:0; overflow:hidden;">
+            <i class="fas fa-times" style="position:absolute; right:20px; top:20px; z-index:10; background:rgba(0,0,0,0.5); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="toggleOverlay('viewLayer', false)"></i>
             <img id="vImg" src="" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
-            <div style="padding:30px;">
-                <h2 id="vTitle" style="font-size:24px; margin-bottom:10px;"></h2>
-                <h3 id="vPrice" style="color:var(--primary); font-size:22px; font-weight:800; margin-bottom:15px;"></h3>
-                <p id="vDesc" style="color:#aaa; font-size:14px; line-height:1.7; margin-bottom:30px;"></p>
-                <div style="display:flex; gap:12px;">
-                    <button class="btn-gold" id="addToCartBtn" style="flex:1; background:#222; color:white; border: 1px solid var(--glass-border);"><i class="fas fa-cart-plus"></i> Cart</button>
-                    <button id="vWA" class="btn-gold" style="flex:2.5; background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> Contact via WhatsApp</button>
+            <div style="padding:25px;">
+                <h2 id="vTitle"></h2>
+                <h3 id="vPrice" style="color:var(--primary); margin:10px 0;"></h3>
+                <p id="vDesc" style="color:#aaa; font-size:14px; margin-bottom:25px;"></p>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-gold" id="addToCartBtn" style="flex:1; background:#333; color:white;">+ Cart</button>
+                    <button id="vWA" class="btn-gold" style="flex:2.5; background:#25D366; color:white;"><i class="fab fa-whatsapp"></i> Chat Seller</button>
                 </div>
             </div>
         </div>
@@ -115,27 +104,23 @@
     <div id="sellModal" class="overlay">
         <div class="glass-panel">
             <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('sellModal', false)"></i>
-            <h3 id="modalTitle" style="font-size:20px;">Publish Your Ad</h3><br>
-            
-            <div id="imgPre" style="display:flex; gap:10px; margin-bottom:15px; overflow-x:auto; padding:5px; scrollbar-width:none;"></div>
-            
+            <h3 id="modalTitle">Publish Ad</h3><br>
+            <div id="imgPre" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px;"></div>
             <input type="file" id="fileIn" multiple hidden onchange="previewImages()">
-            <button class="btn-gold" style="background:rgba(223,188,116,0.1); color:var(--primary); border:1px dashed var(--primary); margin-bottom:20px;" onclick="document.getElementById('fileIn').click()"><i class="fas fa-cloud-upload-alt"></i> CHOOSE PRODUCT IMAGES</button>
-            
-            <input type="text" id="pName" class="input-glass" placeholder="Product Title">
-            <input type="number" id="pPrice" class="input-glass" placeholder="Price (LKR)">
+            <button class="btn-gold" style="background:#222; color:white; border:1px dashed var(--primary);" onclick="document.getElementById('fileIn').click()">SELECT IMAGES</button>
+            <input type="text" id="pName" class="input-glass" placeholder="Title">
+            <input type="number" id="pPrice" class="input-glass" placeholder="Price (Rs.)">
             <select id="pCat" class="input-glass"></select>
-            <textarea id="pDesc" class="input-glass" placeholder="Product details & condition..." style="height:100px; resize:none;"></textarea>
-            <input type="text" id="pWA" class="input-glass" placeholder="WhatsApp Number (e.g. 9477xxxxxxx)">
-            
-            <button class="btn-gold" id="pubBtn" onclick="publish()">CONFIRM & PUBLISH</button>
+            <textarea id="pDesc" class="input-glass" placeholder="Description..." style="height:100px;"></textarea>
+            <input type="text" id="pWA" class="input-glass" placeholder="WhatsApp Number">
+            <button class="btn-gold" id="pubBtn" onclick="publish()">PUBLISH NOW</button>
         </div>
     </div>
 
     <div id="myListingsModal" class="overlay">
         <div class="glass-panel">
             <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('myListingsModal', false)"></i>
-            <h3>My Active Listings</h3><br>
+            <h3>My Active Ads</h3><br>
             <div id="myListContainer"></div>
         </div>
     </div>
@@ -143,9 +128,9 @@
     <div id="cartModal" class="overlay">
         <div class="glass-panel">
             <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('cartModal', false)"></i>
-            <h3>My Shopping Cart</h3><br>
+            <h3>My Cart</h3><br>
             <div id="cartContainer"></div>
-            <div id="cartTotal" style="margin-top:20px; border-top:1px solid var(--glass-border); padding-top:20px; text-align:right; font-weight:800; font-size:18px; color:var(--primary);"></div>
+            <div id="cartTotal" style="margin-top:20px; border-top:1px solid var(--glass-border); padding-top:15px; text-align:right; font-weight:800; color:var(--primary);"></div>
         </div>
     </div>
 
@@ -153,38 +138,32 @@
         <div class="glass-panel">
             <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleOverlay('adminModal', false)"></i>
             <h3 style="color:var(--primary);">Admin Controls</h3><br>
-            
-            <p style="font-size:11px; opacity:0.6; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Market Categories</p>
-            <div id="adminCatList" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
-            <div style="display:flex; gap:10px; margin-bottom:25px;">
-                <input type="text" id="newCatIn" class="input-glass" placeholder="Category Name" style="margin:0;">
+            <p style="font-size:12px; opacity:0.5;">CATEGORIES</p>
+            <div id="adminCatList" style="margin:10px 0;"></div>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <input type="text" id="newCatIn" class="input-glass" placeholder="New Cat" style="margin:0;">
                 <button class="btn-gold" style="width:80px; margin:0;" onclick="addCategory()">ADD</button>
             </div>
-
-            <p style="font-size:11px; opacity:0.6; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Support Settings</p>
+            <p style="font-size:12px; opacity:0.5;">SUPPORT</p>
             <input type="text" id="adminSuppName" class="input-glass" placeholder="Support Name">
-            <input type="text" id="adminSuppNum" class="input-glass" placeholder="WhatsApp Number">
-            <button class="btn-gold" onclick="saveAdminSettings()">UPDATE SYSTEM SETTINGS</button>
+            <input type="text" id="adminSuppNum" class="input-glass" placeholder="Support Number">
+            <button class="btn-gold" onclick="saveAdminSettings()">SAVE SETTINGS</button>
         </div>
     </div>
 
     <div id="sideMenu">
         <i class="fas fa-times" style="float:right; cursor:pointer;" onclick="toggleMenu(false)"></i>
         <div style="margin-top:60px;">
-            <div class="menu-link" onclick="openPublish()"><i class="fas fa-plus-circle"></i> Publish New Ad</div>
-            <div class="menu-link" onclick="loadMyListings()"><i class="fas fa-th-list"></i> My Listings</div>
+            <div class="menu-link" onclick="openPublish()"><i class="fas fa-plus-circle"></i> Publish Ad</div>
+            <div class="menu-link" onclick="loadMyListings()"><i class="fas fa-list"></i> My Listings</div>
             <div class="menu-link" onclick="openCart()"><i class="fas fa-shopping-bag"></i> My Cart <span id="cartCount" style="margin-left:auto; background:var(--primary); color:black; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:900;">0</span></div>
-            <div class="menu-link" onclick="contactSupport()"><i class="fas fa-headset"></i> Customer Support</div>
-            <div class="menu-link" id="adminLink" style="display:none;" onclick="openAdmin()"><i class="fas fa-user-shield"></i> Administration</div>
-            
-            <div class="menu-link" onclick="logout()" style="color:#ff4d4d; margin-top:50px; border-top:1px solid rgba(255,255,255,0.05); padding-top:30px;">
-                <i class="fas fa-power-off"></i> Sign Out
-            </div>
+            <div class="menu-link" id="suppBtn" onclick="contactSupport()"><i class="fas fa-headset"></i> Support</div>
+            <div class="menu-link" id="adminLink" style="display:none;" onclick="openAdmin()"><i class="fas fa-shield-halved"></i> Admin Settings</div>
+            <div class="menu-link" onclick="logout()" style="color:#ff4d4d; margin-top:40px;"><i class="fas fa-power-off"></i> Logout</div>
         </div>
     </div>
 
     <script>
-        // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyDNfce5v0BakfXV0F1aJ_teEj0TvFtPlbg",
             authDomain: "aureum-5f6f4.firebaseapp.com",
@@ -200,7 +179,7 @@
 
         let user = localStorage.getItem('user');
         let allItems = [], cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        let currentCat = 'All', editId = null, systemSettings = { name: "Aureum Support", num: "94771234567" };
+        let currentCat = 'All', editId = null, systemSettings = { name: "Support", num: "94771234567" };
 
         window.onload = () => {
             if(user) {
@@ -211,25 +190,17 @@
             loadCats(); loadItems(); loadSettings();
         };
 
-        // --- AUTH ---
         function handleAuth() {
-            let u = document.getElementById('lUser').value.trim().toLowerCase();
-            let p = document.getElementById('lPass').value;
+            let u = document.getElementById('lUser').value.trim(), p = document.getElementById('lPass').value;
             if(u === 'aureum' && p === '1234') { localStorage.setItem('user', 'admin'); location.reload(); }
             else if(u && p) { localStorage.setItem('user', u); location.reload(); }
         }
         function logout() { localStorage.clear(); location.reload(); }
 
-        // --- DATA LOAD ---
         function loadItems() {
             db.ref('items').on('value', s => {
-                allItems = []; 
-                s.forEach(c => { 
-                    let i = c.val(); 
-                    i.id = c.key; 
-                    allItems.push(i); 
-                });
-                renderGrid();
+                allItems = []; s.forEach(c => { let i = c.val(); i.id = c.key; allItems.push(i); });
+                renderGrid(); // Load grid immediately
             });
         }
 
@@ -238,18 +209,10 @@
                 let cats = ['All']; let adminHtml = '';
                 s.forEach(c => {
                     cats.push(c.val());
-                    adminHtml += `<div class="list-item" style="padding:10px 15px;"><span>${c.val()}</span><i class="fas fa-trash-alt" style="margin-left:auto; color:#ff4d4d; cursor:pointer;" onclick="deleteCat('${c.key}')"></i></div>`;
+                    adminHtml += `<div class="list-item" style="padding:10px;"><span>${c.val()}</span><i class="fas fa-trash" style="margin-left:auto; color:red; cursor:pointer;" onclick="deleteCat('${c.key}')"></i></div>`;
                 });
-                // Main Category Bar
-                document.getElementById('catBar').innerHTML = cats.map(c => `
-                    <div class="cat-item ${currentCat === c ? 'active' : ''}" onclick="setCat('${c}')">${c}</div>
-                `).join('');
-                
-                // Publish Select
-                document.getElementById('pCat').innerHTML = cats.filter(x => x !== 'All').map(c => `
-                    <option value="${c}">${c}</option>
-                `).join('');
-                
+                document.getElementById('catBar').innerHTML = cats.map(c => `<div class="cat-item ${currentCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
+                document.getElementById('pCat').innerHTML = cats.filter(c=>c!=='All').map(c => `<option value="${c}">${c}</option>`).join('');
                 document.getElementById('adminCatList').innerHTML = adminHtml;
             });
         }
@@ -258,43 +221,34 @@
             db.ref('settings').on('value', s => { if(s.exists()) systemSettings = s.val(); });
         }
 
-        // --- GRID SYSTEM (Fixed Logic) ---
         function renderGrid() {
             let term = document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            // Logic: Filter items based on Category AND Search Term
+            // Critical Fix: Improved filter logic so items show without searching
             let filtered = allItems.filter(i => {
-                let matchCat = (currentCat === 'All' || i.cat === currentCat);
-                let matchSearch = (term === "" || i.name.toLowerCase().includes(term) || i.desc.toLowerCase().includes(term));
-                return matchCat && matchSearch;
+                let catMatch = (currentCat === 'All' || i.cat === currentCat);
+                let searchMatch = (term === "" || i.name.toLowerCase().includes(term));
+                return catMatch && searchMatch;
             });
 
-            const grid = document.getElementById('marketGrid');
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.4;">No items found in this category.</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.reverse().map(i => `
+            document.getElementById('marketGrid').innerHTML = filtered.reverse().map(i => `
                 <div class="card" onclick="viewPost('${i.id}')">
-                    <img src="${i.imgs[0]}" loading="lazy">
+                    <img src="${i.imgs[0]}">
                     <div class="card-info">
-                        <span class="card-cat">${i.cat}</span>
-                        <p class="card-title">${i.name}</p>
+                        <small style="color:var(--primary); font-weight:700;">${i.cat}</small>
+                        <p style="font-weight:600; font-size:14px; margin:3px 0;">${i.name}</p>
                         <p class="card-price">Rs. ${Number(i.price).toLocaleString()}</p>
                         <span class="card-date"><i class="far fa-clock"></i> ${new Date(i.time).toLocaleDateString()}</span>
                     </div>
-                </div>`).join('');
+                </div>`).join('') || '<p style="grid-column:1/-1; text-align:center; opacity:0.5; padding:50px;">No items found.</p>';
         }
 
-        // --- ACTIONS ---
         function viewPost(id) {
             let i = allItems.find(x => x.id === id);
             document.getElementById('vImg').src = i.imgs[0];
             document.getElementById('vTitle').innerText = i.name;
             document.getElementById('vPrice').innerText = "Rs. " + Number(i.price).toLocaleString();
             document.getElementById('vDesc').innerText = i.desc;
-            document.getElementById('vWA').onclick = () => window.open(`https://wa.me/${i.wa}?text=Hi, I'm interested in your ${i.name} listed on Aureum.`);
+            document.getElementById('vWA').onclick = () => window.open(`https://wa.me/${i.wa}`);
             document.getElementById('addToCartBtn').onclick = () => addToCart(i);
             toggleOverlay('viewLayer', true);
         }
@@ -302,25 +256,18 @@
         async function publish() {
             let btn = document.getElementById('pubBtn');
             let files = document.getElementById('fileIn').files;
-            
-            if(!editId && files.length === 0) return alert("Please select at least one image.");
-            
-            btn.innerText = "Uploading to Cloud..."; btn.disabled = true;
+            if(!editId && files.length === 0) return alert("Select images!");
 
+            btn.innerText = "Uploading..."; btn.disabled = true;
             let urls = editId ? allItems.find(x=>x.id===editId).imgs : [];
             
-            // Image Upload Logic
             if(files.length > 0) {
-                let newUrls = [];
+                urls = [];
                 for(let f of files) {
                     let fd = new FormData(); fd.append("image", f);
-                    try {
-                        let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, {method:"POST", body:fd});
-                        let d = await res.json();
-                        if(d.success) newUrls.push(d.data.url);
-                    } catch(e) { console.error("Upload failed"); }
+                    let res = await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY, {method:"POST", body:fd});
+                    let d = await res.json(); if(d.success) urls.push(d.data.url);
                 }
-                if(newUrls.length > 0) urls = newUrls;
             }
 
             let data = {
@@ -335,11 +282,7 @@
             };
 
             let ref = editId ? db.ref('items/'+editId) : db.ref('items').push();
-            ref.set(data).then(() => {
-                alert("Success!");
-                currentCat = 'All'; // Reset to show the new item
-                location.reload();
-            });
+            ref.set(data).then(() => { alert("Done!"); currentCat = 'All'; location.reload(); });
         }
 
         function loadMyListings() {
@@ -347,21 +290,16 @@
             document.getElementById('myListContainer').innerHTML = my.map(i => `
                 <div class="list-item">
                     <img src="${i.imgs[0]}">
-                    <div class="list-info">
-                        <b>${i.name}</b>
-                        <small>Rs. ${i.price}</small>
-                    </div>
-                    <div class="list-actions">
-                        <button class="icon-btn" style="background:#dfbc7420; color:var(--primary);" onclick="editPost('${i.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="icon-btn" style="background:#ff4d4d20; color:#ff4d4d;" onclick="deletePost('${i.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`).join('') || '<div style="text-align:center; padding:20px; opacity:0.5;">No active ads.</div>';
+                    <div style="flex:1;"><b>${i.name}</b><br><small>Rs. ${i.price}</small></div>
+                    <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-right:15px;" onclick="editPost('${i.id}')"></i>
+                    <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deletePost('${i.id}')"></i>
+                </div>`).join('') || 'No ads found.';
             toggleOverlay('myListingsModal', true); toggleMenu(false);
         }
 
         function editPost(id) {
             editId = id; let i = allItems.find(x => x.id === id);
-            document.getElementById('modalTitle').innerText = "Update Listing";
+            document.getElementById('modalTitle').innerText = "Edit Ad";
             document.getElementById('pName').value = i.name;
             document.getElementById('pPrice').value = i.price;
             document.getElementById('pCat').value = i.cat;
@@ -370,65 +308,43 @@
             toggleOverlay('myListingsModal', false); toggleOverlay('sellModal', true);
         }
 
-        // --- CART ---
-        function addToCart(item) {
-            if(!cart.find(x => x.id === item.id)) {
-                cart.push(item);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartBadge();
-            }
-            alert("Item added to your bag.");
+        function addToCart(i) {
+            if(!cart.find(x => x.id === i.id)) { cart.push(i); localStorage.setItem('cart', JSON.stringify(cart)); updateCartBadge(); }
+            alert("Added to bag!");
         }
         function openCart() {
-            let total = 0;
+            let tot = 0;
             document.getElementById('cartContainer').innerHTML = cart.map((i, idx) => {
-                total += Number(i.price);
-                return `
-                <div class="list-item">
-                    <img src="${i.imgs[0]}">
-                    <div class="list-info"><b>${i.name}</b><small>Rs. ${i.price}</small></div>
-                    <i class="fas fa-trash-alt" style="color:#ff4d4d; cursor:pointer;" onclick="removeFromCart(${idx})"></i>
-                </div>`;
-            }).join('') || '<div style="text-align:center; padding:20px; opacity:0.5;">Your bag is empty.</div>';
-            document.getElementById('cartTotal').innerText = "Subtotal: Rs. " + total.toLocaleString();
+                tot += Number(i.price);
+                return `<div class="list-item"><img src="${i.imgs[0]}"><div><b>${i.name}</b><br><small>Rs. ${i.price}</small></div><i class="fas fa-times" style="margin-left:auto; cursor:pointer;" onclick="removeFromCart(${idx})"></i></div>`;
+            }).join('') || 'Cart is empty.';
+            document.getElementById('cartTotal').innerText = "Total: Rs. " + tot.toLocaleString();
             toggleOverlay('cartModal', true); toggleMenu(false);
         }
         function removeFromCart(idx) { cart.splice(idx, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartBadge(); openCart(); }
         function updateCartBadge() { document.getElementById('cartCount').innerText = cart.length; }
 
-        // --- ADMIN ---
         function openAdmin() {
             document.getElementById('adminSuppName').value = systemSettings.name;
             document.getElementById('adminSuppNum').value = systemSettings.num;
             toggleOverlay('adminModal', true); toggleMenu(false);
         }
         function saveAdminSettings() {
-            let d = { name: document.getElementById('adminSuppName').value, num: document.getElementById('adminSuppNum').value };
-            db.ref('settings').set(d).then(() => alert("System parameters updated."));
+            db.ref('settings').set({ name: document.getElementById('adminSuppName').value, num: document.getElementById('adminSuppNum').value }).then(() => alert("Saved!"));
         }
-        function contactSupport() { window.open(`https://wa.me/${systemSettings.num}?text=Support Request from ${user}`); }
+        function contactSupport() { window.open(`https://wa.me/${systemSettings.num}`); }
 
-        // --- HELPERS ---
-        function setCat(c) { 
-            currentCat = c; 
-            renderGrid(); 
-            loadCats(); // Refresh UI to show gold fill
-        }
+        function setCat(c) { currentCat = c; renderGrid(); loadCats(); }
         function toggleMenu(s) { document.getElementById('sideMenu').classList.toggle('active', s); }
         function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
-        function openPublish() { editId = null; document.getElementById('modalTitle').innerText = "Publish Your Ad"; toggleOverlay('sellModal', true); toggleMenu(false); }
+        function openPublish() { editId = null; document.getElementById('modalTitle').innerText = "Publish Ad"; toggleOverlay('sellModal', true); toggleMenu(false); }
         function addCategory() { let v = document.getElementById('newCatIn').value; if(v) db.ref('categories').push(v).then(()=>document.getElementById('newCatIn').value=''); }
-        function deleteCat(k) { if(confirm("Permanently delete this category?")) db.ref('categories/'+k).remove(); }
-        function deletePost(id) { if(confirm("Remove this ad from market?")) db.ref('items/'+id).remove().then(()=>loadMyListings()); }
-        
+        function deleteCat(k) { db.ref('categories/'+k).remove(); }
+        function deletePost(id) { if(confirm("Delete Ad?")) db.ref('items/'+id).remove().then(()=>loadMyListings()); }
         function previewImages() {
             let pre = document.getElementById('imgPre'); pre.innerHTML = '';
             for(let f of document.getElementById('fileIn').files) {
-                let r = new FileReader(); 
-                r.onload = (e) => pre.innerHTML += `
-                    <div style="position:relative; flex-shrink:0;">
-                        <img src="${e.target.result}" style="width:80px; height:80px; border-radius:18px; border:2px solid var(--primary); object-fit:cover;">
-                    </div>`;
+                let r = new FileReader(); r.onload = (e) => pre.innerHTML += `<img src="${e.target.result}" style="width:60px; height:60px; border-radius:10px; object-fit:cover; border:2px solid var(--primary);">`;
                 r.readAsDataURL(f);
             }
         }
